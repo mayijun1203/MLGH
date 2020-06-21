@@ -21,8 +21,17 @@ df=df[['sell','original','age','km','petrol','dealer','manual']].reset_index(dro
 df.plot(x='original',y='sell',style='o',title='sell vs original')
 
 
-# Sklearn
-reg=sklearn.linear_model.LinearRegression().fit(df[['original','age','km','petrol','dealer','manual']],df['sell'])
 
-# Statsmodels
-sm.OLS(df['sell'],sm.add_constant(df[['original','age','km','petrol','dealer','manual']])).fit().summary()
+# Sklearn
+xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['original','age','km','petrol','dealer','manual']],df['sell'],test_size=0.5)
+reg=sklearn.linear_model.LinearRegression().fit(xtrain,ytrain)
+ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
+print(sklearn.metrics.mean_absolute_error(ytest, ypred['pred']))
+print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
+print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
+print(sklearn.metrics.median_absolute_error(ytest, ypred['pred']))
+
+
+
+# Statsmodels for model summary
+sm.OLS(ytrain,sm.add_constant(xtrain)).fit().summary()
