@@ -1,6 +1,7 @@
 import pandas as pd  
-import numpy as np  
-import sklearn
+import numpy as np
+import sklearn.model_selection
+import sklearn.linear_model
 import statsmodels.api as sm
 
 
@@ -26,6 +27,7 @@ df.plot(x='original',y='sell',style='o',title='sell vs original')
 xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['original','age','km','petrol','dealer','manual']],df['sell'],test_size=0.5)
 reg=sklearn.linear_model.LinearRegression().fit(xtrain,ytrain)
 ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
+ypred.plot(x='test',y='pred',style='o')
 print(sklearn.metrics.mean_absolute_error(ytest, ypred['pred']))
 print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
 print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
