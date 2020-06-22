@@ -15,19 +15,14 @@ df=df[['deposit','age','default','balance','housing','loan','campaign']].reset_i
 
 
 
-
-
 # Sklearn
-xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['original','age','km','petrol','dealer','manual']],df['sell'],test_size=0.5)
-reg=sklearn.linear_model.LinearRegression().fit(xtrain,ytrain)
+xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.5)
+reg=sklearn.linear_model.LogisticRegression().fit(xtrain,ytrain)
 ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
 ypred.plot(x='test',y='pred',style='o')
-print(sklearn.metrics.mean_absolute_error(ytest, ypred['pred']))
-print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
-print(sklearn.metrics.mean_squared_error(ytest, ypred['pred']))
-print(sklearn.metrics.median_absolute_error(ytest, ypred['pred']))
+print(sklearn.metrics.classification_report(ytest, ypred['pred']))
 
 
 
 # Statsmodels for model summary
-sm.OLS(ytrain,sm.add_constant(xtrain)).fit().summary()
+sm.Logit(ytrain,sm.add_constant(xtrain)).fit().summary2()
