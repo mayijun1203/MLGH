@@ -18,7 +18,7 @@ df=df[['deposit','age','default','balance','housing','loan','campaign']].reset_i
 # Sklearn
 xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.5)
 reg=sklearn.linear_model.LogisticRegression().fit(xtrain,ytrain)
-ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
+ypred=pd.DataFrame({'test':ytest,'prob':[x[1] for x in reg.predict_proba(xtest)],'pred':reg.predict(xtest)})
 ypred.plot(x='test',y='pred',style='o')
 print(sklearn.metrics.classification_report(ytest, ypred['pred']))
 
