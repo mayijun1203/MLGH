@@ -6,7 +6,7 @@ import statsmodels.api as sm
 
 
 
-df=pd.read_csv('C:/Users/Yijun Ma/Desktop/D/DOCUMENT/GITHUB/MLGH/linear regression/car.csv')
+df=pd.read_csv('C:/Users/mayij/Desktop/DOCUMENT/GITHUB/MLGH/linear regression/car.csv')
 df['sell']=df['Selling_Price']
 df['original']=df['Present_Price']
 df['age']=2019-df['Year']
