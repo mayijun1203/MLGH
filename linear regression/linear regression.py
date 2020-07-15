@@ -43,9 +43,8 @@ print(sklearn.metrics.median_absolute_error(ypred['test'], ypred['lasso']))
 
 
 
-
-
-
-
 # Statsmodels for model summary
 sm.OLS(ytrain,sm.add_constant(xtrain)).fit().summary()
+
+
+
