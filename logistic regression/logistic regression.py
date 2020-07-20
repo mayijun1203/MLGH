@@ -6,7 +6,7 @@ import statsmodels.api as sm
 
 
 
-df=pd.read_csv('C:/Users/Yijun Ma/Desktop/D/DOCUMENT/GITHUB/MLGH/logistic regression/bank.csv',sep=';')
+df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/logistic regression/bank.csv',sep=';')
 df['deposit']=np.where(df['y']=='yes',1,0)
 df['default']=np.where(df['default']=='yes',1,0)
 df['housing']=np.where(df['housing']=='yes',1,0)
@@ -16,11 +16,12 @@ df=df[['deposit','age','default','balance','housing','loan','campaign']].reset_i
 
 
 # Sklearn
-xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.5)
+xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.2)
+xtrain,xval,ytrain,yval=sklearn.model_selection.train_test_split(xtrain,ytrain,test_size=0.25)
 reg=sklearn.linear_model.LogisticRegression().fit(xtrain,ytrain)
-ypred=pd.DataFrame({'test':ytest,'prob':[x[1] for x in reg.predict_proba(xtest)],'pred':reg.predict(xtest)})
-ypred.plot(x='test',y='pred',style='o')
-print(sklearn.metrics.classification_report(ytest, ypred['pred']))
+ypred=pd.DataFrame({'val':yval,'prob':[x[1] for x in reg.predict_proba(xval)],'pred':reg.predict(xval)})
+ypred.plot(x='val',y='pred',style='o')
+print(sklearn.metrics.classification_report(yval, ypred['pred']))
 
 
 
