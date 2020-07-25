@@ -26,7 +26,7 @@ import cv2
 import matplotlib.pyplot as plt
 import cvlib as cv
 
-im=cv2.imread(path+'0720093513.jpg')
+im=cv2.imread(path+'0720095841.jpg')
 plt.imshow(im)
 
 bbox,label,conf=cv.detect_common_objects(im)
