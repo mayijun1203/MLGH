@@ -44,9 +44,6 @@ sm.Logit(ytrain,sm.add_constant(xtrain)).fit().summary2()
 
 
 
-
-
-
 df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/IPFGH/HHTS.csv')
 df['SEX']=np.where(df['SEX']=='MALE',1,0)
 df['RACE1']=np.where(df['RACE']=='BLACK',1,0)
@@ -67,4 +64,8 @@ ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
 sm.MNLogit(ytrain,sm.add_constant(xtrain)).fit().summary()
 
 
-
+import plotly
+import plotly.express as px
+plotly.io.renderers.default = "browser"
+fig = px.scatter(x=[0, 1, 2, 3, 4], y=[0, 1, 4, 9, 16])
+fig.show()
