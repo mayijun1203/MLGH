@@ -1,9 +1,40 @@
 # Test Pi
+
+# Python
+import datetime
+import random
+
+start=datetime.datetime.now()
+
+num_samples = 100000000
+
+def inside(p):     
+  x, y = random.random(), random.random()
+  return x*x + y*y < 1
+
+# count=sum([inside(x) for x in range(0, num_samples)])
+count=sum(map(inside,range(0, num_samples)))
+
+pi = 4 * count / num_samples
+print(pi)
+
+print(datetime.datetime.now()-start)
+# 30 secs; not using full CPUs
+
+
+
+
+
+
+# Pyspark
 import findspark
 findspark.init()
 
 import pyspark
 import random
+
+import datetime
+start=datetime.datetime.now()
 
 sc = pyspark.SparkContext(appName="Pi")
 num_samples = 100000000
@@ -19,7 +50,8 @@ print(pi)
 
 sc.stop()
 
-
+print(datetime.datetime.now()-start)
+# 15 secs; using full CPUs
 
 
 
