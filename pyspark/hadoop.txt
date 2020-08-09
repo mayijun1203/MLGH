@@ -1,0 +1,10 @@
+run cmd as admin
+C:\Hadoop\sbin\start-all.cmd
+localhost:8088
+localhost:9870
+
+
+
+hdfs dfs -mkdir hdfs://localhost:9000/fhv
+hdfs dfs -ls hdfs://localhost:9000/
+hdfs dfs -put C:\Users\mayij\Desktop\fhv.csv hdfs://localhost:9000/fhv
