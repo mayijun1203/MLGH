@@ -61,3 +61,4 @@ sc=pyspark.SparkContext(appName="fhv")
 rdd=sc.textFile('hdfs://localhost:9000/fhv/fhvhv_tripdata_2020-06.csv')
 rdd.take(10)
 
+# rdd works in jupyter
