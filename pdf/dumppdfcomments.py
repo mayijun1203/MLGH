@@ -29,5 +29,5 @@ for i in range(doc.numPages()):
                     #print("========= ANNOTATION =========")
                     
                     print(txt)
-                    with open("t/home/mayijun/GITHUB/MLGH/pdf/test.txt", "a") as f:
+                    with open("/home/mayijun/GITHUB/MLGH/pdf/test.txt", "a") as f:
                         f.write(txt)
