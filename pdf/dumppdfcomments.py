@@ -30,4 +30,4 @@ for i in range(doc.numPages()):
                     
                     print(txt)
                     with open("/home/mayijun/GITHUB/MLGH/pdf/test.txt", "a") as f:
-                        f.write(txt)
+                        f.write(txt+'\n')
