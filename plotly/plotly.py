@@ -5,12 +5,11 @@ import plotly.express as px
 
 
 
-# pio.renderers.default = "browser"
+pio.renderers.default = "browser"
 pd.set_option('display.max_columns', None)
 
 
-# df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/linear regression/car.csv')
-df=pd.read_csv('/home/mayij/GITHUB/MLGH/linear regression/car.csv')
+df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/linear regression/car.csv')
 df['sell']=df['Selling_Price']
 df['original']=df['Present_Price']
 df['age']=2019-df['Year']
