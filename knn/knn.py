@@ -66,8 +66,8 @@ score['trainscore']=np.nan
 score['valscore']=np.nan
 for i in list(score['k']):
     knn=KNeighborsRegressor(n_neighbors=i).fit(xtrain,ytrain)
-    score.loc[i-1,'trainscore']=knn.score(xtrain,ytrain)
-    score.loc[i-1,'valscore']=knn.score(xval,yval)
+    score.loc[score['k']==i,'trainscore']=knn.score(xtrain,ytrain)
+    score.loc[score['k']==i,'valscore']=knn.score(xval,yval)
 
 k=11
 knn=KNeighborsRegressor(n_neighbors=k).fit(xtrain,ytrain)
