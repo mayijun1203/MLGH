@@ -18,7 +18,9 @@ df=df[['deposit','age','default','balance','housing','loan','campaign']].reset_i
 # Sklearn
 xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.2)
 xtrain,xval,ytrain,yval=sklearn.model_selection.train_test_split(xtrain,ytrain,test_size=0.25)
+
 s=sklearn.svm.SVC(kernel='rbf',C=1,gamma='scale',probability=True).fit(xtrain,ytrain)
+
 ypred=pd.DataFrame({'val':yval,'prob':[x[1] for x in s.predict_proba(xval)],'pred':s.predict(xval)})
 ypred.plot(x='val',y='pred',style='o')
 print(sklearn.metrics.classification_report(yval, ypred['pred']))
