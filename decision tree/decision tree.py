@@ -30,8 +30,9 @@ ypred.plot(x='val',y='pred',style='o')
 print(sklearn.metrics.classification_report(yval, ypred['pred']))
 
 
-
-
+impscore=pd.DataFrame(index=['age','default','balance','housing','loan','campaign'])
+impscore['score']=dt.feature_importances_
+impscore.plot(kind='bar')
 
 
 
