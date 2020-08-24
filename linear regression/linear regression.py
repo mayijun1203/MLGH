@@ -38,6 +38,8 @@ xtestscaled=scalar.transform(xtest)
 
 # Linear Regression
 reg=sklearn.linear_model.LinearRegression().fit(xtrainscaled,ytrain)
+# K-Fold Cross Validation Score
+sklearn.model_selection.cross_val_score(reg,xtrainscaled,ytrain,cv=10)
 print('Train set R-Squared: '+str(reg.score(xtrainscaled,ytrain)))
 ypred=pd.DataFrame({'val':yval,'pred':reg.predict(xvalscaled)})
 ypred.plot(x='val',y='pred',style='o')
