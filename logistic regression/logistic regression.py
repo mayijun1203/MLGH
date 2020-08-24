@@ -3,6 +3,8 @@ import numpy as np
 import sklearn.model_selection
 import sklearn.linear_model
 import statsmodels.api as sm
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 
@@ -42,7 +44,7 @@ sm.Logit(ytrain,sm.add_constant(xtrain)).fit().summary2()
 
 
 
-df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/IPFGH/HHTS.csv')
+df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/ipf/HHTS.csv')
 df['SEX']=np.where(df['SEX']=='MALE',1,0)
 df['RACE1']=np.where(df['RACE']=='BLACK',1,0)
 df['RACE2']=np.where(df['RACE']=='ASIAN',1,0)
@@ -58,8 +60,15 @@ df=df[['SEX','RACE1','RACE2','RACE3','AGE1','AGE2','AGE3','AGE4','EMP','TRIP']].
 xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['SEX','RACE1','RACE2','RACE3','AGE1','AGE2','AGE3','AGE4','EMP']],df['TRIP'],test_size=0.4)
 
 reg=sklearn.linear_model.LogisticRegression().fit(xtrain,ytrain)
+
 ypred=pd.DataFrame({'test':ytest,'pred':reg.predict(xtest)})
 sm.MNLogit(ytrain,sm.add_constant(xtrain)).fit().summary()
 
 
 
+
+# Confusion Matrix
+cm=sklearn.metrics.confusion_matrix(ytest,reg.predict(xtest))
+sns.heatmap(cm,annot=True)
+plt.ylabel('True Label')
+plt.xlabel('Predicted Label')
