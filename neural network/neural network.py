@@ -1,6 +1,7 @@
 import pandas as pd  
 import numpy as np
 import sklearn.model_selection
+import sklearn.neural_network
 import keras
 
 
@@ -15,9 +16,12 @@ df=df[['deposit','age','default','balance','housing','loan','campaign']].reset_i
 
 
 
-# Keras
 xtrain,xtest,ytrain,ytest=sklearn.model_selection.train_test_split(df[['age','default','balance','housing','loan','campaign']],df['deposit'],test_size=0.2)
 xtrain,xval,ytrain,yval=sklearn.model_selection.train_test_split(xtrain,ytrain,test_size=0.25)
+
+
+
+# Keras
 nn=keras.models.Sequential()
 nn.add(keras.layers.Dense(units=12,input_dim=6,activation='relu'))
 nn.add(keras.layers.Dense(units=1,activation='sigmoid'))
@@ -38,6 +42,10 @@ print('Accuracy: %.2f' % (accuracy*100)+'%')
 
 
 
+# Scikit-Learn
+nn=sklearn.neural_network.MLPClassifier(hidden_layer_sizes=[10,10],solver='lbfgs',alpha=1,activation='tanh').fit(xtrain,ytrain)
+ypred=pd.DataFrame({'val':yval,'prob':[x[1] for x in nn.predict_proba(xval)],'pred':nn.predict(xval)})
+print(sklearn.metrics.classification_report(yval, ypred['pred']))
 
 
 
