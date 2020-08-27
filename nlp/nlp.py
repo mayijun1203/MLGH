@@ -37,3 +37,4 @@ nltk.word_tokenize(k)
 # Sentence Splitting
 k="This is the first sentence. A gallon of milk in the U.S. costs $2.99. Is this the third sentence? Yes, it is!"
 nltk.sent_tokenize(k)
+
