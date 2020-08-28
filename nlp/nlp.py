@@ -1,5 +1,5 @@
-import nltk
-nltk.download()
+# import nltk
+# nltk.download()
 
 import nltk.book
 
@@ -45,9 +45,6 @@ k="Children shouldn't drink a sugary drink before bad."
 k=nltk.word_tokenize(k)
 nltk.pos_tag(k)
 nltk.help.upenn_tagset('NNP')
-
-
-
 
 
 
