@@ -2,6 +2,7 @@
 # nltk.download()
 
 import nltk.book
+import nltk.corpus
 
 # Frequency
 dist=nltk.book.FreqDist(nltk.book.text7)
@@ -45,6 +46,23 @@ k="Children shouldn't drink a sugary drink before bad."
 k=nltk.word_tokenize(k)
 nltk.pos_tag(k)
 nltk.help.upenn_tagset('NNP')
+
+
+
+# Semantic
+deer=nltk.corpus.wordnet.synset('deer.n.01')
+elk=nltk.corpus.wordnet.synset('elk.n.03')
+deer.path_similarity(elk)
+
+
+
+
+
+
+
+
+
+
 
 
 
