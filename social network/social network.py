@@ -40,3 +40,51 @@ gb.add_nodes_from(['1','2','3','4'],bipartite=1)
 g=nx.Graph()
 g.add_edges_from([(0,1),(0,2),(0,3),(0,5),(1,3),(1,6),(3,4),(4,5),(4,7),(5,8),(8,9)])
 nx.draw_networkx(g)
+
+# Local Clustering Coefficient: 1/(4*3/2)
+nx.clustering(g,0)
+
+# Global Clustering Coefficient
+nx.average_clustering(g)
+
+# Transitivity (3*closed triads/open triads)
+nx.transitivity(g)
+
+# Path
+nx.shortest_path(g,0,7)
+nx.shortest_path_length(g,0,7)
+nx.shortest_path_length(g,0)
+nx.average_shortest_path_length(g)
+nx.diameter(g) # longest path length
+nx.eccentricity(g) # longest path length for each node
+nx.radius(g) # min eccentricity
+nx.periphery(g) # nodes with eccentricity=diameter
+nx.center(g) # nodes with eccentricity=radius
+
+nx.bfs_tree(g,0).edges()
+
+
+# Connectivity
+nx.is_connected(g)
+sorted(nx.connected_components(g))
+nx.node_connectivity(g)
+nx.minimum_node_cut(g)
+nx.edge_connectivity(g)
+nx.minimum_edge_cut(g)
+nx.minimum_node_cut(g,4,0)
+nx.minimum_edge_cut(g,4,0)
+
+
+
+# Karate Club Data
+k=nx.karate_club_graph()
+nx.draw_networkx(k,pos=nx.random_layout(k))
+nx.draw_networkx(k,pos=nx.circular_layout(k))
+nx.draw_networkx(k,pos=nx.circular_layout(k),edge_color='0.4',alpha=0.1)
+
+
+
+
+
+
+
