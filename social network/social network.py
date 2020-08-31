@@ -76,11 +76,49 @@ nx.minimum_edge_cut(g,4,0)
 
 
 
+
+# Centrality
+nx.degree_centrality(g) # degree/number of nodes
+nx.closeness_centrality(g) # number of nodes/sum of shortest path lengths
+nx.betweenness_centrality(g,normalized=True,endpoints=False,k=5) # sum of (# of shortest path through the node/# of shortest paths)
+nx.edge_betweenness_centrality(g,normalized=True) # sum of (# of shortest path through the edge/# of shortest paths)
+
+
+
+
+
+
+
+
 # Karate Club Data
 k=nx.karate_club_graph()
 nx.draw_networkx(k,pos=nx.random_layout(k))
 nx.draw_networkx(k,pos=nx.circular_layout(k))
 nx.draw_networkx(k,pos=nx.circular_layout(k),edge_color='0.4',alpha=0.1)
+
+
+
+# Page Rank
+# Assuming equal share at the beginning and recalculate based on the share received till convergence
+nx.pagerank(g)
+# Scaled Page Rank with Random Walker
+nx.pagerank(g,alpha=0.8)
+
+
+
+# Hubs and Authorities
+# Auth score as in degrees
+# Hub score as out degrees
+nx.hits(g)
+
+
+
+
+
+
+
+
+
 
 
 
