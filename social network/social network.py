@@ -1,4 +1,5 @@
 import networkx as nx
+import pandas as pd
 
 
 
@@ -119,7 +120,6 @@ nx.hits(g)
 # degree of the node/sum of degrees of all nodes
 g=nx.barabasi_albert_graph(1000000,1)
 d=g.degree()
-import pandas as pd
 h=pd.DataFrame(d)[1].hist(bins=1000,log=True)
 
 
@@ -130,7 +130,6 @@ h=pd.DataFrame(d)[1].hist(bins=1000,log=True)
 g=nx.watts_strogatz_graph(100,6,0.04)
 nx.draw_networkx(g)
 d=g.degree()
-import pandas as pd
 h=pd.DataFrame(d)[1].hist()
 nx.average_clustering(g)
 nx.average_shortest_path_length(g)
@@ -144,7 +143,40 @@ nx.draw_networkx(g)
 
 
 
-
-
+# Link Prediction
+# Common Neighbors
+cn=[(x[0],x[1],len(list(nx.common_neighbors(g,x[0],x[1])))) for x in nx.non_edges(g)]
+# Jaccard Coefficient (# of common neighbors/total neighbors)
+jc=list(nx.jaccard_coefficient(g))
+# Resources Allocation (sum of fractions of the end node receive from middle nodes based on their degrees)
+ra=list(nx.resource_allocation_index(g))
+# Adamic-Adar Index (Resources Allocation with log of degrees)
+aa=list(nx.adamic_adar_index(g))
+# Preferential Attachment (product of nodes' degree)
+pa=list(nx.preferential_attachment(g))
+# Community Common Neighbors (with bonus for nieghbors in the same community)
+g.nodes[0]['community']=0
+g.nodes[1]['community']=1
+g.nodes[2]['community']=0
+g.nodes[3]['community']=1
+g.nodes[4]['community']=1
+g.nodes[5]['community']=0
+g.nodes[6]['community']=1
+g.nodes[7]['community']=1
+g.nodes[8]['community']=0
+g.nodes[9]['community']=0
+ccn=list(nx.cn_soundarajan_hopcroft(g))
+# Community Resource Allocation (only consider nodes in the same community)
+g.nodes[0]['community']=0
+g.nodes[1]['community']=1
+g.nodes[2]['community']=0
+g.nodes[3]['community']=1
+g.nodes[4]['community']=1
+g.nodes[5]['community']=0
+g.nodes[6]['community']=1
+g.nodes[7]['community']=1
+g.nodes[8]['community']=0
+g.nodes[9]['community']=0
+cra=list(nx.ra_index_soundarajan_hopcroft(g))
 
 
