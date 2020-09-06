@@ -6,4 +6,4 @@ decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\rninja\rninjatest.html
 
 decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\s.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\s.pdf --chrome-arg=--disable-web-security
 
-decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf
+decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf -s 1600x900
