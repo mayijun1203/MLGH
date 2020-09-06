@@ -3,5 +3,8 @@
 Single Page:
 https://mayijun1203.github.io/MLGH/rhtml/htmltest.html
 
-Presentation:
+Slide:
 https://mayijun1203.github.io/MLGH/rhtml/slidetest.html
+
+Presentation:
+https://mayijun1203.github.io/MLGH/rhtml/presenttest.html

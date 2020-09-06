@@ -3,6 +3,8 @@ title: "slidetest"
 output:
   slidy_presentation: default
   ioslides_presentation: default
+  beamer_presentation: default
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -34,5 +36,11 @@ library(plotly)
 p <- ggplot(data = diamonds, aes(x = cut, fill = clarity)) +
             geom_bar(position = "dodge")
 ggplotly(p)
+```
+
+
+## Last Slide
+```{r}
+knitr::include_app("https://nycplanning.carto.com/u/dcptransportation/builder/37b19307-b396-429f-8aff-0a430a7490c6/embed")
 ```
 
