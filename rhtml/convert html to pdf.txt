@@ -1,5 +1,0 @@
-npm install -g decktape
-
-decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\rhtml\present\presenttest.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\rhtml\present\presenttest.pdf
-
-decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\rhtml\s\s.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\rhtml\s\s.pdf
