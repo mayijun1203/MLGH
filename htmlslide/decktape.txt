@@ -8,3 +8,6 @@ decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\s.html C:\Users\mayi
 
 decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf  -s 1600x900 --chrome-arg=--allow-file-access-from-files
 
+decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf -p 2000
+
+decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.pdf
