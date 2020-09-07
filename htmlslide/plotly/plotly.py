@@ -12,4 +12,5 @@ df=pd.read_csv(path+'Subway_ridership_data_20200903.csv')
 
 
 fig=px.scatter(x=range(10), y=range(10))
+fig.show()
 fig.write_html(path+'subway.html')
