@@ -23,8 +23,13 @@ fig.write_html(path+'subway.html')
 
 
 
-fig=px.scatter(df,x='Date', y='Total Estimated Ridership',color='% Change From 2019',title='<b>TEST<b>')
+fig=px.scatter(df,x='Date', y='Total Estimated Ridership',color='% Change From 2019',
+               title='<b>TEST<b>',template='plotly_white')
 fig.update_layout(
-    font_family="sans-serif",
+    yaxis_fixedrange=True,
+    xaxis_fixedrange=True,
+    dragmode=False
 )
-fig.show()
+fig.write_html(path+'subway.html',include_plotlyjs='cdn')
+
+
