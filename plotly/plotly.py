@@ -1,4 +1,5 @@
 import pandas as pd
+import geopandas as gpd
 import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go
@@ -6,7 +7,7 @@ import plotly.graph_objects as go
 
 pd.set_option('display.max_columns', None)
 pio.renderers.default = "browser"
-path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/htmlslide/plotly/'
+path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/plotly/'
 
 
 
@@ -31,5 +32,18 @@ fig.update_layout(
     dragmode=False
 )
 fig.write_html(path+'subway.html',include_plotlyjs='cdn')
+
+
+
+
+
+gdf=pd.read_csv(path+'cplxam.csv')
+fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
+                  color_continuous_scale=px.colors.carto.Teal_r,zoom=9.5,
+                  mapbox_style="carto-positron")
+fig.show()
+fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
+
+
 
 
