@@ -1,27 +1,35 @@
 import pandas as pd
-import numpy as np
 import plotly.io as pio
 import plotly.express as px
+import plotly.graph_objects as go
 
 
-
-pio.renderers.default = "browser"
 pd.set_option('display.max_columns', None)
-
-
-df=pd.read_csv('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/linear regression/car.csv')
-df['sell']=df['Selling_Price']
-df['original']=df['Present_Price']
-df['age']=2019-df['Year']
-df['km']=df['Kms_Driven']/1000
-df['petrol']=np.where(df['Fuel_Type']=='Petrol',1,0)
-df['dealer']=np.where(df['Seller_Type']=='Dealer',1,0)
-df['manual']=np.where(df['Transmission']=='Manual',1,0)
-df=df[['sell','original','age','km','petrol','dealer','manual']].reset_index(drop=True)
+pio.renderers.default = "browser"
+path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/htmlslide/plotly/'
 
 
 
+df=pd.read_csv(path+'Subway_ridership_data_20200903.csv')
+df=df[::-1].reset_index(drop=True)
+df['% Change From 2019']=[pd.to_numeric(x.replace('%',''))/100 for x in df['% Change From 2019 Weekday/Saturday/Sunday Average']]
 
-fig=px.scatter(df,x='original',y='sell')
-fig.show()
+
+fig=px.bar(df,x='Date', y='Total Estimated Ridership')
+# fig.update_layout(autosize=True)
+# fig.show()
+fig.write_html(path+'subway.html')
+
+
+
+
+fig=px.scatter(df,x='Date', y='Total Estimated Ridership',color='% Change From 2019',
+               title='<b>TEST<b>',template='plotly_white')
+fig.update_layout(
+    yaxis_fixedrange=True,
+    xaxis_fixedrange=True,
+    dragmode=False
+)
+fig.write_html(path+'subway.html',include_plotlyjs='cdn')
+
 
