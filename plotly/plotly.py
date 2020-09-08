@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 pd.set_option('display.max_columns', None)
 pio.renderers.default = "browser"
 path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/plotly/'
-
+mapboxtoken=pd.read_table(path+'mapboxtoken.txt',header=None).loc[0,0]
 
 
 df=pd.read_csv(path+'Subway_ridership_data_20200903.csv')
@@ -43,6 +43,7 @@ fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
                   mapbox_style="carto-positron")
 fig.update_layout(
     mapbox=dict(
+        accesstoken=mapboxtoken,
         bearing=0,
         center=dict(
             lat=40.765735,
