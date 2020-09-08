@@ -54,6 +54,7 @@ fig.update_layout(
 )
 fig.show()
 fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
+fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turnstile.html',include_plotlyjs='cdn')
 
 
 
