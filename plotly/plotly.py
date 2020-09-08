@@ -39,8 +39,18 @@ fig.write_html(path+'subway.html',include_plotlyjs='cdn')
 
 gdf=pd.read_csv(path+'cplxam.csv')
 fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
-                  color_continuous_scale=px.colors.carto.Teal_r,zoom=9.5,
+                  color_continuous_scale=px.colors.carto.Teal_r,
                   mapbox_style="carto-positron")
+fig.update_layout(
+    mapbox=dict(
+        bearing=0,
+        center=dict(
+            lat=40.765735,
+            lon=-73.978331
+        ),
+        zoom=9.5,
+        )
+)
 fig.show()
 fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
 
