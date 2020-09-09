@@ -57,5 +57,17 @@ fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
 fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turnstile.html',include_plotlyjs='cdn')
 
 
+gdf=pd.read_csv(path+'cplxam.csv')
+fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
+                  color_continuous_scale=px.colors.carto.Teal_r)
+fig.update_layout(
+    mapbox_style="light",
+    mapbox_accesstoken=mapboxtoken,
+    mapbox_zoom=9.5,
+    mapbox_center={"lat": 40.765735, "lon": -73.978331})
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.show()
+fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
+fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turnstile.html',include_plotlyjs='cdn')
 
 
