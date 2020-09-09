@@ -5,9 +5,7 @@
     <meta charset="utf-8" />
     <title>Style circles with a data-driven property</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"
-        integrity="sha384-DhY0JzHtRSi6hVlkcl8pnYDFxtpFPLFknTwdYcCP0K3mDvN9AOIAcEdhU/1OFCPl"
-        crossorigin="anonymous"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
     <style>
         body {
@@ -32,28 +30,22 @@
             container: 'map',
             style: 'mapbox://styles/mapbox/light-v10',
             zoom: 9.5,
-            center: [-73.978331,40.765735],
+            center: [-73.978331, 40.765735],
             preserveDrawingBuffer: true
         });
 
         map.on('load', function () {
             map.addSource('subway', {
                 type: 'geojson',
-                url: 'https://mayijun1203.github.io/MLGH/mapbox/test.geojson'
+                data: './test.geojson'
             });
             map.addLayer({
-                'id': 'population',
+                'id': 'subway',
                 'type': 'circle',
-                'source-layer': 'subway',
+                'source': 'subway',
                 'paint': {
-                    // make circles larger as the user zooms from z12 to z22
-                    'circle-radius': {
-                        'base': 1.75,
-                        'stops': [
-                            [12, 2],
-                            [22, 180]
-                        ]
-                    },
+                    'circle-radius': 6,
+                    'circle-color': '#B42222'
                 }
             });
         });
