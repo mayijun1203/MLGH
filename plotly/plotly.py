@@ -61,6 +61,7 @@ gdf=pd.read_csv(path+'cplxam.csv')
 fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
                   color_continuous_scale=px.colors.carto.Teal_r)
 fig.update_layout(
+    autosize=False,
     mapbox_style="light",
     mapbox_accesstoken=mapboxtoken,
     mapbox_zoom=9.5,
