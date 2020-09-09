@@ -11,3 +11,9 @@ decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html 
 decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf -p 2000
 
 decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.pdf
+
+
+decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\test.pdf 
+
+--chrome-arg=--use-gl=swiftshader-webgl
+
