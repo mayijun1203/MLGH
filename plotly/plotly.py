@@ -43,7 +43,6 @@ fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
                   mapbox_style="carto-positron")
 fig.update_layout(
     mapbox=dict(
-        accesstoken=mapboxtoken,
         bearing=0,
         center=dict(
             lat=40.765735,
