@@ -58,7 +58,7 @@ fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turns
 
 gdf=pd.read_csv(path+'cplxam.csv')
 fig=px.scatter_mapbox(gdf,lat='CplxLat',lon='CplxLong',color='LatestEntries',
-                  color_continuous_scale=px.colors.carto.Teal_r)
+                      color_continuous_scale=px.colors.carto.Teal_r)
 fig.update_layout(
     mapbox_style="light",
     mapbox_accesstoken=mapboxtoken,
