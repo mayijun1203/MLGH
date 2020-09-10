@@ -13,4 +13,4 @@ decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html 
 decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\plotly\subway.pdf
 
 
-
+decktape C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs\index.html C:\Users\mayij\Desktop\DOC\GITHUB\MLGH\htmlslide\s\revealjs.pdf --chrome-arg=--allow-file-access-from-files
