@@ -44,7 +44,7 @@ sub process_file {
   print "Processing $file\n";
   
   my $output_slides_src = "./slides_template";
-  my $output_slides_dest = "./slides_out";
+  my $output_slides_dest = "/home/mayijun/GITHUB/MLGH/htmlslide/s/slides_out";
   
   my $filename_title = $file;
   $filename_title =~ s/\..*//ig;
