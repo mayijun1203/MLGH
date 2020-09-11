@@ -38,17 +38,69 @@
         map.on('load', function () {
             map.addSource('subway', {
                 type: 'geojson',
-                data: 'test.geojson'
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/test.geojson',
+                cluster: false
             });
             map.addLayer({
                 'id': 'subway',
                 'type': 'circle',
                 'source': 'subway',
                 'paint': {
-                    'circle-radius': 3,
-                    'circle-color': '#B42222'
+                    'circle-radius': {
+                        'base': 1.75,
+                        'stops': [
+                            [12, 3],
+                            [22, 180]
+                        ]
+                    },
+                    'circle-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'LatestEntries'],
+                        0,
+                        '#fff5eb',
+                        200,
+                        '#fed2a6',
+                        400,
+                        '#fd9243',
+                        600,
+                        '#df4f05',
+                        10000,
+                        '#7f2704'
+                    ]
                 }
             });
+        });
+        var marker = new mapboxgl.Marker()
+            .setLngLat([-73.978331, 40.765735])
+            .addTo(map);
+        var popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.on('mouseenter', 'places', function (e) {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.CplxName;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        });
+
+        map.on('mouseleave', 'places', function () {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
         });
     </script>
 
