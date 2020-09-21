@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import geopandas as gpd
 import plotly.io as pio
 import plotly.express as px
@@ -70,3 +71,44 @@ fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
 fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turnstile.html',include_plotlyjs='cdn')
 
 
+
+
+
+
+
+
+# Mapping Full Settings
+# px.set_mapbox_access_token(mapboxtoken)
+df=pd.read_csv(path+'cplxam.csv')
+df['DiffPct1'].describe(percentiles=np.arange(0.2,1,0.2))
+df['cat']=np.where(df['DiffPct1']>=-0.9,'>=-90%',
+          np.where(df['DiffPct1']>=-0.92,'-92%~-91%',
+          np.where(df['DiffPct1']>=-0.94,'-94%~-93%',
+          np.where(df['DiffPct1']>=-0.96,'-96%~-95%',
+          '<-96%'))))
+fig=px.scatter_mapbox(df,
+                      lat='CplxLat',
+                      lon='CplxLong',
+                      color='cat',
+                      text='CplxName',
+                      hover_name='CplxName',
+                      hover_data={'CplxName':True,
+                                  'CplxLat':False,
+                                  'CplxLong':False,
+                                  'Percent Change':(':.2f',df['DiffPct1']),
+                                  'Percent Change Category':df['cat'],
+                                  'cat':True},
+                      size=range(0,426),
+                      category_orders={'cat':['<-98%','-98%~-97%','-96%~-95%','-94%~-93%','-92%~-91%','>=-90%']},
+                      labels={'cat':'Percent Change Category'},
+                      color_discrete_sequence=['#d1e3f3','#9ac8e1','#529dcc','#1c6cb1','#08306b'],
+                      # color_discrete_map={'-94%~-93%':'#7f2704'},
+                      # opacity=0.9,
+                      size_max=10,
+                      zoom=9.5,
+                      center={'lat':np.mean(df['CplxLat']),'lon':np.mean(df['CplxLong'])},
+                      mapbox_style='carto-positron',
+                      # height=800,
+                      width=800)
+fig.show()
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
