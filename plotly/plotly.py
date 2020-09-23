@@ -14,6 +14,14 @@ path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/plotly/'
 mapboxtoken=pd.read_table(path+'mapboxtoken.txt',header=None).loc[0,0]
 
 
+
+
+
+
+
+
+
+# Testing
 df=pd.read_csv(path+'Subway_ridership_data_20200903.csv')
 df=df[::-1].reset_index(drop=True)
 df['% Change From 2019']=[pd.to_numeric(x.replace('%',''))/100 for x in df['% Change From 2019 Weekday/Saturday/Sunday Average']]
@@ -71,6 +79,18 @@ fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig.show()
 fig.write_html(path+'turnstile.html',include_plotlyjs='cdn')
 fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turnstile.html',include_plotlyjs='cdn')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -173,14 +193,27 @@ fig.show()
 # Polygon
 px.set_mapbox_access_token(mapboxtoken)
 gdf=gpd.read_file(path+'cplxpknta.shp')
-gdf.to_file(path+'cplxpknta.geojson',driver='GeoJSON',index=True)
-gdf=gpd.read_file(path+'cplxpknta.geojson')
+gdf['PKDiffPct3'].describe(percentiles=np.arange(0.2,1,0.2))
+gdf['cat']=np.where(gdf['PKDiffPct3']>=4,'>=400%',
+           np.where(gdf['PKDiffPct3']>=3,'300%~399%',
+           np.where(gdf['PKDiffPct3']>=2,'200%~299%',
+           np.where(gdf['PKDiffPct3']>=1,'100%~199%',
+           '<100%'))))
+# gdf.to_file(path+'cplxpknta.geojson',driver='GeoJSON',index=True)
+# gdf=gpd.read_file(path+'cplxpknta.geojson')
 gjs=json.loads(gdf.to_json())
-fig=px.choropleth_mapbox(gdf,
+fig=px.choropleth_mapbox(data_frame=gdf,
                          geojson=gjs,
-                         featureidkey='properties.index',
-                         locations='index',
-                         color='PKDiffPct3',
+                         # featureidkey='properties.NTAName',
+                         locations='NTAName',
+                         color='cat',
+                         hover_name='NTAName',
+                         hover_data={'index':False,
+                                     'Percent Change':(':.2f',gdf['PKDiffPct3']),
+                                     'cat':False},
+                         category_orders={'cat':['<100%','100%~199%','200%~299%','300%~399%','>=400%']},
+                         labels={'cat':'Percent Change Category'},
+                         color_discrete_sequence=['#d1e3f3','#9ac8e1','#529dcc','#1c6cb1','#08306b'],
                          center={'lat':np.mean([min(gdf.bounds['miny']),max(gdf.bounds['maxy'])]),
                                  'lon':np.mean([min(gdf.bounds['minx']),max(gdf.bounds['maxx'])])},
                          zoom=9.5,
@@ -197,5 +230,6 @@ fig.write_image(path+'cplxpknta.jpg',
                 scale=1,
                 validate=True,
                 engine='kaleido')
+fig.write_html(path+'cplxpknta.html',include_plotlyjs='cdn')
 
 
