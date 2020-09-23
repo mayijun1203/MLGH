@@ -99,7 +99,8 @@ fig.write_html('C:/Users/mayij/Desktop/DOC/GITHUB/td-covid19/report/plotly/turns
 
 
 
-# Mapping Full Settings
+# Plotly Express
+
 # Point
 # px.set_mapbox_access_token(mapboxtoken)
 df=pd.read_csv(path+'cplxam.csv')
@@ -204,13 +205,13 @@ gdf['cat']=np.where(gdf['PKDiffPct3']>=4,'>=400%',
 gjs=json.loads(gdf.to_json())
 fig=px.choropleth_mapbox(data_frame=gdf,
                          geojson=gjs,
-                         # featureidkey='properties.NTAName',
+                         featureidkey='properties.NTAName',
                          locations='NTAName',
                          color='cat',
                          hover_name='NTAName',
-                         hover_data={'index':False,
-                                     'Percent Change':(':.2f',gdf['PKDiffPct3']),
-                                     'cat':False},
+                         hover_data={'NTAName':False,
+                                     'cat':False,
+                                     'Percent Change':(':.2f',gdf['PKDiffPct3'])},
                          category_orders={'cat':['<100%','100%~199%','200%~299%','300%~399%','>=400%']},
                          labels={'cat':'Percent Change Category'},
                          color_discrete_sequence=['#d1e3f3','#9ac8e1','#529dcc','#1c6cb1','#08306b'],
@@ -231,5 +232,48 @@ fig.write_image(path+'cplxpknta.jpg',
                 validate=True,
                 engine='kaleido')
 fig.write_html(path+'cplxpknta.html',include_plotlyjs='cdn')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Plotly Graph Objects
+gdf=gpd.read_file(path+'cplxpknta.shp')
+gdf['PKDiffPct3'].describe(percentiles=np.arange(0.2,1,0.2))
+gdf['cat']=np.where(gdf['PKDiffPct3']>=4,'>=400%',
+           np.where(gdf['PKDiffPct3']>=3,'300%~399%',
+           np.where(gdf['PKDiffPct3']>=2,'200%~299%',
+           np.where(gdf['PKDiffPct3']>=1,'100%~199%',
+           '<100%'))))
+gjs=json.loads(gdf.to_json())
+
+fig=go.Figure()
+fig.add_trace(
+    go.Choropleth(
+        geojson=gjs,
+        featureidkey='properties.NTACode',
+        locations=gdf.loc[gdf['cat']=='>=400%','NTACode'],
+        z=gdf['PKDiffPct3'],
+        colorscale=['#d1e3f3','#9ac8e1','#529dcc','#1c6cb1','#08306b'],
+        marker_line_color='#FFFFFF'))
+fig.update_layout(mapbox_style="carto-positron",
+                  mapbox_zoom=9.5,
+                  mapbox_center={'lat':np.mean([min(gdf.bounds['miny']),max(gdf.bounds['maxy'])]),
+                                 'lon':np.mean([min(gdf.bounds['minx']),max(gdf.bounds['maxx'])])})
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.show()
+
 
 
