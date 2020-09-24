@@ -62,29 +62,49 @@
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
         var map = new mapboxgl.Map({ // creating a new map
             container: 'mainmap', // same as the div id to place the map
-            minZoom: 0, // no need to change
-            maxZoom: 22, // no need to change
-            minPitch: 0, // no need to change
-            maxPitch: 60, // no need to change
+            // minZoom: 0, // no need to change
+            // maxZoom: 22, // no need to change
+            // minPitch: 0, // no need to change
+            // maxPitch: 60, // no need to change
             style: 'mapbox://styles/mapbox/light-v10', // light base map
             hash: true, // make sure it's on to get the url with map view
-            interactive: true, // make sure it's on to enable the interactivity
-            bearingSnap: 7, // no need to change
-            pitchWithRotate: true, // turned on to enable rotation
-            clickTolerance: 3, // no need to change
+            // interactive: true, // turned on to enable the interactivity
+            // bearingSnap: 7, // no need to change
+            // pitchWithRotate: true, // turned on to enable rotation
+            // clickTolerance: 3, // no need to change
             attributionControl: true, // show the credit bar
             customAttribution: '<strong> NYC DCP </strong>', // add credit to the beggining
-            logoPosition: 'bottom-left', // no need to change 
-            failIfMajorPerformanceCaveat: false, // no need to change
+            // logoPosition: 'bottom-left', // no need to change 
+            // failIfMajorPerformanceCaveat: false, // no need to change
             preserveDrawingBuffer: true, // make sure it's on to allow printing
-            antialias: false, // no need to change
-            refreshExpiredTiles: true, // no need to change
-            maxBounds: false, // no need to change; e.g. [[-75, 40], [-73, 42]]
-            scrollZoom: true, // no need to change; to zoom only based on center point, use { around: 'center' }
-            boxZoom: true, // no need to change; use shift to create the box
-            
-            zoom: 9.5,
-            center: [-73.978331, 40.765735],
+            // antialias: false, // no need to change
+            // refreshExpiredTiles: true, // no need to change
+            // maxBounds: [[-75, 40], [-73, 42]], // no need to change
+            // scrollZoom: true, // no need to change; to zoom only based on center point, use { around: 'center' }
+            // boxZoom: true, // no need to change; use shift to create the box
+            // dragRotate: true, // no need to change
+            // dragPan: true, // no need to change
+            // keyboard: true, // no need to change
+            // doubleClickZoom: true, // no need to change
+            // touchZoomRotate: true, // no need to change
+            // touchPitch: true, // no need to change
+            // doubleClickZoom: true, // no need to change
+            // trackResize: false, // no need to change
+            center: [-73.978331, 40.765735], // testing to get the centroid of bounds
+            zoom: 9.5, // set the initial zoom of the map view
+            // bearing: 0, // no need to change; set the initial bearing of the map view
+            // pitch: 0, // no need to change; set the initial pitch of the map view
+            // bounds: [[-75, 40], [-73, 42]], // no need to change; if set, it'll override center and zoom
+            // fitBoundsOptions: {padding: {top: 10, bottom:25, left: 15, right: 5}}, // no need to change
+            // renderWorldCopies: true, // no need to change
+            // maxTileCacheSize: null, // no need to change
+            // localIdeographFontFamily: 'sans-serif', // no need to change
+            // transformRequest: null, // no need to change
+            // collectResourceTiming: false, // no need to change
+            // fadeDuration: 300, // no need to change
+            // crossSourceCollisions: true, // no need to change
+            // accessToken: null, // no need to change; if set, it'll override the token in the mapboxgl.accessToken
+            // locale: null // no need to change
         });
 
         map.on('load', function () {
@@ -157,7 +177,6 @@
                 item.appendChild(value);
                 legend.appendChild(item);
             };
-
 
 
             $('#downloadLink').click(function () {
