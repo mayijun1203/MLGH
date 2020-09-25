@@ -52,11 +52,15 @@
     </style>
 </head>
 
+
+
 <body>
     <div id="mainmap"></div>
     <div class='map-overlay' id='legend'>
         <a id="downloadLink" href="" download="map.png">Download ↓</a>
     </div>
+
+
 
     <script>
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
@@ -107,21 +111,49 @@
             // locale: null // no need to change
         });
 
+
+
         map.on('load', function () {
 
-            map.addControl(new mapboxgl.NavigationControl(),'top-left');
+
+            // Add Navigation Control
+            map.addControl(new mapboxgl.NavigationControl({
+                showCompass: true,
+                showZoom: true,
+                visualizePitch: true
+            }),
+                'top-left'
+            );
 
 
-            // Add Geojson
-            map.addSource('subway', {
+            // Add Data Source
+            map.addSource('point', {
                 type: 'geojson',
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/point.geojson',
+                // data:'point.geojson', // if using relative path
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/point.geojson', // if using url
                 cluster: false
             });
+
+            map.addSource('line', {
+                type: 'geojson',
+                // data:'line.geojson', // if using relative path
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/line.geojson', // if using url
+                cluster: false
+            });
+
+
+
+            
             map.addLayer({
-                'id': 'subway',
+                'id': 'line',
+                'type': 'line',
+                'source': 'line',
+            });
+
+            map.addLayer({
+                'id': 'point',
                 'type': 'circle',
-                'source': 'subway',
+                'source': 'point',
                 'paint': {
                     'circle-radius': {
                         'base': 1.75,
@@ -143,12 +175,21 @@
                 }
             });
 
+
+
+
+
+
+
+
+
+
             // Add hover popup
             var popup = new mapboxgl.Popup({
                 closeButton: false,
                 closeOnClick: false
             });
-            map.on('mouseenter', 'subway', function (e) {
+            map.on('mouseenter', 'point', function (e) {
                 map.getCanvas().style.cursor = 'pointer';
                 var coordinates = e.features[0].geometry.coordinates.slice();
                 var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
@@ -158,7 +199,7 @@
                 }
                 popup.setLngLat(coordinates).setHTML(description).addTo(map);
             });
-            map.on('mouseleave', 'subway', function () {
+            map.on('mouseleave', 'point', function () {
                 map.getCanvas().style.cursor = '';
                 popup.remove();
             });
