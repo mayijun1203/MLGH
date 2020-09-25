@@ -59,7 +59,6 @@
     </div>
 
     <script>
-        let token = require('/Users/Documents/workspace/test.json');
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
         var map = new mapboxgl.Map({ // creating a new map
             container: 'mainmap', // same as the div id to place the map
@@ -110,10 +109,13 @@
 
         map.on('load', function () {
 
+            map.addControl(new mapboxgl.NavigationControl(),'top-left');
+
+
             // Add Geojson
             map.addSource('subway', {
                 type: 'geojson',
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/test.geojson',
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/point.geojson',
                 cluster: false
             });
             map.addLayer({
