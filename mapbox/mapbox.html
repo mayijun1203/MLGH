@@ -63,7 +63,11 @@
 
 
     <script>
+        // Set MapBox token
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
+
+
+        // Initiate the base map
         var map = new mapboxgl.Map({ // creating a new map
             container: 'mainmap', // same as the div id to place the map
             // minZoom: 0, // no need to change
@@ -112,10 +116,8 @@
         });
 
 
-
+        // Add data
         map.on('load', function () {
-
-
             // Add Navigation Control
             map.addControl(new mapboxgl.NavigationControl({
                 showCompass: true,
@@ -125,35 +127,40 @@
                 'top-left'
             );
 
-
             // Add Data Source
-            map.addSource('point', {
+            map.addSource('polygontest', {
                 type: 'geojson',
-                // data:'point.geojson', // if using relative path
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/point.geojson', // if using url
-                cluster: false
+                // data:'polygontest.geojson', // if using relative path
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontest.geojson', // if using url
+            });
+            map.addSource('linetest', {
+                type: 'geojson',
+                // data:'linetest.geojson', // if using relative path
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetest.geojson', // if using url
+            });
+            map.addSource('pointtest', {
+                type: 'geojson',
+                // data:'pointtest.geojson', // if using relative path
+                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtest.geojson', // if using url
             });
 
-            map.addSource('line', {
-                type: 'geojson',
-                // data:'line.geojson', // if using relative path
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/line.geojson', // if using url
-                cluster: false
-            });
-
-
-
-            
+            // Add Layers
             map.addLayer({
-                'id': 'line',
+                id: 'pg', //layer id
+                type: 'fill', // symbol type
+                source: 'polygontest', // source id
+                filter: ['==', 'NTACode', 'BK88'] // filter
+
+            });
+            map.addLayer({
+                'id': 'ln',
                 'type': 'line',
-                'source': 'line',
+                'source': 'linetest',
             });
-
             map.addLayer({
-                'id': 'point',
+                'id': 'pt',
                 'type': 'circle',
-                'source': 'point',
+                'source': 'pointtest',
                 'paint': {
                     'circle-radius': {
                         'base': 1.75,
@@ -189,7 +196,7 @@
                 closeButton: false,
                 closeOnClick: false
             });
-            map.on('mouseenter', 'point', function (e) {
+            map.on('mouseenter', 'pt', function (e) {
                 map.getCanvas().style.cursor = 'pointer';
                 var coordinates = e.features[0].geometry.coordinates.slice();
                 var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
@@ -199,7 +206,7 @@
                 }
                 popup.setLngLat(coordinates).setHTML(description).addTo(map);
             });
-            map.on('mouseleave', 'point', function () {
+            map.on('mouseleave', 'pt', function () {
                 map.getCanvas().style.cursor = '';
                 popup.remove();
             });
