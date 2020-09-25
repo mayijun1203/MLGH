@@ -1,17 +1,25 @@
 import pandas as pd
 import numpy as np
 import geopandas as gpd
-import plotly.io as pio
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.subplots as ps
 import json
 
 
 pd.set_option('display.max_columns', None)
-pio.renderers.default = "browser"
-path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/plotly/'
-mapboxtoken=pd.read_table(path+'mapboxtoken.txt',header=None).loc[0,0]
+path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/mapbox/'
+
+
+
+
+
+pt=gpd.read_file(path+'pointtest.geojson')
+pt['LatestEntries'].describe(percentiles=np.arange(0.2,1,0.2))
+pt['cat']=np.where(pt['LatestEntries']>800,'>800',
+           np.where(pt['LatestEntries']>600,'601~800',
+           np.where(pt['LatestEntries']>400,'401~600',
+           np.where(pt['LatestEntries']>200,'201~400',
+           '<=200'))))
+pt.to_file(path+'pointtest2.geojson',driver='GeoJSON',index=True)
+
 
 
 

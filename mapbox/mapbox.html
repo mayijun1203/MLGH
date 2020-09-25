@@ -141,13 +141,13 @@
                 'type': 'fill', // symbology type
                 'source': 'polygontest', // source id
                 'filter': ['==', 'NTACode', 'BK88'], // filter
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
                 'paint': {
                     'fill-color': '#ffff00', // fill color
                     'fill-opacity': 1, // fill opacity
                     'fill-outline-color': '#ffff00', // outline color
-                },
-                'layout': {
-                    'visibility': 'visible', // visibility of the layer
                 },
             });
             // Add fill outline layer
@@ -156,14 +156,14 @@
                 'type': 'line', // symbology type
                 'source': 'polygontest', // source id
                 'filter': ['==', 'NTACode', 'BK88'], // filter
-                'paint': {
-                    'line-color': '#000000', // fill color
-                    'line-width': 5, // line width
-                },
                 'layout': {
                     'line-cap': 'round', // line endings; butt/round/square
                     'line-join': 'round', // line joining; bevel/round/miter
                     'visibility': 'visible', // visibility of the layer
+                },
+                'paint': {
+                    'line-color': '#000000', // fill color
+                    'line-width': 5, // line width
                 },
             });
             // Add fill extrusion layer
@@ -171,15 +171,15 @@
                 'id': 'pgext', // layer id
                 'type': 'fill-extrusion', // symbology type
                 'source': 'polygontest', // source id
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
                 'paint': {
                     'fill-extrusion-base': 0, // base height
                     'fill-extrusion-color': '#529dcc', // extrusion color
                     'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
                     'fill-extrusion-opacity': 0.3, // extrusion opacity
                     'fill-extrusion-vertical-gradient': true, // darker farther down
-                },
-                'layout': {
-                    'visibility': 'visible', // visibility of the layer
                 },
             });
 
@@ -197,18 +197,18 @@
                 'id': 'ln', // layer id
                 'type': 'line', // symbology type
                 'source': 'linetest', // source id
-                'filter': ['==', 'oem_route', 'D'], // filter
-                'paint': {
-                    'line-blur': 0, // blur line
-                    'line-color': '#ff0000', // line color
-                    'line-dasharray': [5, 5], // dash line
-                    'line-opacity': 0.5, // line opacity
-                    'line-width': 10, // line width
-                },
+                'filter': ['==', 'type', 'Main Line'], // filter
                 'layout': {
                     'line-cap': 'round', // line endings; butt/round/square
                     'line-join': 'round', // line joining; bevel/round/miter
                     'visibility': 'visible', // visibility of the layer
+                },
+                'paint': {
+                    'line-blur': 0, // blur line
+                    'line-color': '#ff0000', // line color
+                    // 'line-dasharray': [5, 5], // dash line
+                    'line-opacity': 1, // line opacity
+                    'line-width': 2, // line width
                 },
             });
 
@@ -217,14 +217,17 @@
             // Add data source
             map.addSource('pointtest', {
                 'type': 'geojson',
-                // 'data':'pointtest.geojson', // if using relative path
-                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtest.geojson', // if using url
+                // 'data':'pointtestcat.geojson', // if using relative path
+                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson', // if using url
             });
             // Add circle layer
             map.addLayer({
                 'id': 'pt', // layer id
                 'type': 'circle', // symbology type
                 'source': 'pointtest', // source id
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
                 'paint': {
                     'circle-blur': 0, // blur circle
                     'circle-color': [
@@ -245,14 +248,11 @@
                             [12, 3],
                             [22, 300]
                         ]
-                    }, // circle radius; still need to work out
+                    }, // circle radius; change size based on zoom level
 
                     'circle-stroke-color': '#000000', // circle stroke color
                     'circle-stroke-opacity': 0.5, // circle stroke opacity
                     'circle-stroke-width': 1, // circle stroke width
-                },
-                'layout': {
-                    'visibility': 'visible', // visibility of the layer
                 },
             });
 
