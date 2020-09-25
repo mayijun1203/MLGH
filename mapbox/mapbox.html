@@ -144,6 +144,17 @@
                     'visibility': 'visible', // visibility of the layer
                 },
             });
+            // Add outline layer
+            map.addLayer({
+                'id': 'pgol', // layer id
+                'type': 'line', // symbology type
+                'source': 'polygontest', // source id
+                'filter': ['==', 'NTACode', 'BK88'], // filter
+                'paint': {
+                    'line-color': '#000000', // fill color
+                    'line-width': 5,
+                },
+            });
             // Add fill extrusion layer
             map.addLayer({
                 'id': 'pgext', // layer id
@@ -203,13 +214,7 @@
                 'type': 'circle', // symbology type
                 'source': 'pointtest', // source id
                 'paint': {
-                    'circle-radius': {
-                        'base': 1.75,
-                        'stops': [
-                            [12, 3],
-                            [22, 300]
-                        ]
-                    },
+                    'circle-blur': 0, // blur circle
                     'circle-color': [
                         'match',
                         ['get', 'cat'],
@@ -219,8 +224,18 @@
                         '601~800', '#df4f05',
                         '>800', '#7f2704',
                         '#ccc'
-                    ],
-                }
+                    ], // circle color
+                    'circle-radius': {
+                        'base': 1.75,
+                        'stops': [
+                            [12, 3],
+                            [22, 300]
+                        ]
+                    },
+                },
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
             });
 
 
