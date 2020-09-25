@@ -52,22 +52,17 @@
     </style>
 </head>
 
-
-
 <body>
     <div id="mainmap"></div>
     <div class='map-overlay' id='legend'>
         <a id="downloadLink" href="" download="map.png">Download ↓</a>
     </div>
 
-
-
     <script>
         // Set MapBox token
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
 
-
-        // Initiate the base map
+        // Create base map
         var map = new mapboxgl.Map({ // creating a new map
             container: 'mainmap', // same as the div id to place the map
             // minZoom: 0, // no need to change
@@ -80,8 +75,8 @@
             // bearingSnap: 7, // no need to change
             // pitchWithRotate: true, // turned on to enable rotation
             // clickTolerance: 3, // no need to change
-            attributionControl: true, // show the credit bar
-            customAttribution: '<strong> NYC DCP </strong>', // add credit to the beggining
+            // attributionControl: true, // show the credit bar
+            // customAttribution: '<strong> NYC DCP </strong>', // add overall credit to the beggining
             // logoPosition: 'bottom-left', // no need to change 
             // failIfMajorPerformanceCaveat: false, // no need to change
             preserveDrawingBuffer: true, // make sure it's on to allow printing
@@ -112,55 +107,101 @@
             // fadeDuration: 300, // no need to change
             // crossSourceCollisions: true, // no need to change
             // accessToken: null, // no need to change; if set, it'll override the token in the mapboxgl.accessToken
-            // locale: null // no need to change
+            // locale: null, // no need to change
         });
 
-
-        // Add data
+        // Add layers
         map.on('load', function () {
             // Add Navigation Control
             map.addControl(new mapboxgl.NavigationControl({
-                showCompass: true,
-                showZoom: true,
-                visualizePitch: true
+                'showCompass': true,
+                'showZoom': true,
+                'visualizePitch': true,
             }),
-                'top-left'
+                'top-left',
             );
 
-            // Add Data Source
+            // Add polygons
+            // Add data source
             map.addSource('polygontest', {
-                type: 'geojson',
-                // data:'polygontest.geojson', // if using relative path
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontest.geojson', // if using url
+                'type': 'geojson',
+                // 'data':'polygontest.geojson', // if using relative path
+                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontest.geojson', // if using url
             });
+            // Add fill layer
+            map.addLayer({
+                'id': 'pg', // layer id
+                'type': 'fill', // symbology type
+                'source': 'polygontest', // source id
+                'filter': ['==', 'NTACode', 'BK88'], // filter
+                'paint': {
+                    'fill-color': '#ffff00', // fill color
+                    'fill-opacity': 1, // fill opacity
+                    'fill-outline-color': '#0000ff', // outline color
+                },
+                'layout': {
+                    'fill-sort-key': 1, // larger number over smaller number
+                    'visibility': 'visible', // visibility of the layer
+                },
+            });
+            // Add fill extrusion layer
+            map.addLayer({
+                'id': 'pgext', // layer id
+                'type': 'fill-extrusion', // symbology type
+                'source': 'polygontest', // source id
+                'paint': {
+                    'fill-extrusion-base': 0, // base height
+                    'fill-extrusion-color': '#529dcc', // extrusion color
+                    'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
+                    'fill-extrusion-opacity': 0.3, // extrusion opacity
+                    'fill-extrusion-vertical-gradient': true, // darker farther down
+                },
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
+            });
+
+            // Add lines
+            // Add data source
             map.addSource('linetest', {
-                type: 'geojson',
-                // data:'linetest.geojson', // if using relative path
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetest.geojson', // if using url
+                'type': 'geojson',
+                // 'data':'linetest.geojson', // if using relative path
+                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetest.geojson', // if using url
+                lineMetrics: true, // only used for gradient line
             });
+            // Add line layer
+            map.addLayer({
+                'id': 'ln', // layer id
+                'type': 'line', // symbology type
+                'source': 'linetest', // source id
+                'filter': ['==', 'oem_route', 'D'], // filter
+                'paint': {
+                    'line-blur': 0, // blur line
+                    'line-color': '#ff0000', // line color
+                    'line-dasharray': [5, 5], // dash line
+                    'line-opacity': 0.5, // line opacity
+                    'line-width': 10, // line width
+                },
+                'layout': {
+                    'line-cap': 'round', // line endings; butt/round/square
+                    'line-join': 'round', // line joining; bevel/round/miter
+                    'line-sort-key': 1, // larger number over smaller number
+                    'visibility': 'visible', // visibility of the layer
+                },
+            });
+
+            // Add points
+            // Add data source
             map.addSource('pointtest', {
-                type: 'geojson',
-                // data:'pointtest.geojson', // if using relative path
-                data: 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtest.geojson', // if using url
+                'type': 'geojson',
+                // 'data':'pointtest.geojson', // if using relative path
+                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtest.geojson', // if using url
             });
-
-            // Add Layers
+            // Add circle layer
             map.addLayer({
-                id: 'pg', //layer id
-                type: 'fill', // symbol type
-                source: 'polygontest', // source id
-                filter: ['==', 'NTACode', 'BK88'] // filter
-
-            });
-            map.addLayer({
-                'id': 'ln',
-                'type': 'line',
-                'source': 'linetest',
-            });
-            map.addLayer({
-                'id': 'pt',
-                'type': 'circle',
-                'source': 'pointtest',
+                'id': 'pt', // layer id
+                'type': 'circle', // symbology type
+                'source': 'pointtest', // source id
                 'paint': {
                     'circle-radius': {
                         'base': 1.75,
@@ -178,9 +219,17 @@
                         '601~800', '#df4f05',
                         '>800', '#7f2704',
                         '#ccc'
-                    ]
+                    ],
                 }
             });
+
+
+
+
+
+
+
+
 
 
 
