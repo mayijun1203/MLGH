@@ -51,14 +51,33 @@
             height: 10px;
             margin-right: 5px;
         }
+
+        #layerfilter {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 150px;
+            height: 150px;
+            color: #000000;
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 10px;
+            font-family: sans-serif;
+            line-height: 30px;
+        }
     </style>
 </head>
 
 
 <body>
+
     <div id="mainmap"></div>
     <div class='map-overlay' id='legend'></div>
-    <a id="downloadLink" href="" download="map.png" style="position:absolute; right:0;top:0">Download ↓</a>
+    <div>
+        <a id="downloadLink" href="" download="map.png">Download ↓</a>
+    </div>
+    <nav id="layerfilter"></nav>
 
 
     <script>
@@ -115,7 +134,6 @@
         });
 
 
-
         // Add layers
         map.on('load', function () {
             // Add Navigation Control
@@ -127,27 +145,36 @@
                 'top-left',
             );
 
-            
+
             // Add polygons
             // Add data source
             map.addSource('polygontest', {
                 'type': 'geojson',
-                // 'data':'polygontest.geojson', // if using relative path
-                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontest.geojson', // if using url
+                'data': 'polygontestcat.geojson', // if using relative path
+                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontestcat.geojson', // if using url
             });
             // Add fill layer
             map.addLayer({
                 'id': 'pg', // layer id
                 'type': 'fill', // symbology type
                 'source': 'polygontest', // source id
-                'filter': ['==', 'NTACode', 'BK88'], // filter
+                'filter': ['==', 'BoroName', 'Queens'], // filter
                 'layout': {
                     'visibility': 'visible', // visibility of the layer
                 },
                 'paint': {
-                    'fill-color': '#ffff00', // fill color
+                    'fill-color': [
+                        'match',
+                        ['get', 'cat'],
+                        '<=100%', '#f7fcf5',
+                        '101%~200%', '#caeac3',
+                        '201%~300%', '#7bc87c',
+                        '301%~400%', '#2a924a',
+                        '>400%', '#00441b',
+                        '#000000'
+                    ], // fill color
                     'fill-opacity': 1, // fill opacity
-                    'fill-outline-color': '#ffff00', // outline color
+                    // 'fill-outline-color': '#ffff00', // outline color
                 },
             });
             // Add fill outline layer
@@ -155,40 +182,40 @@
                 'id': 'pgol', // layer id
                 'type': 'line', // symbology type
                 'source': 'polygontest', // source id
-                'filter': ['==', 'NTACode', 'BK88'], // filter
+                'filter': ['==', 'BoroName', 'Queens'], // filter
                 'layout': {
                     'line-cap': 'round', // line endings; butt/round/square
                     'line-join': 'round', // line joining; bevel/round/miter
                     'visibility': 'visible', // visibility of the layer
                 },
                 'paint': {
-                    'line-color': '#000000', // fill color
-                    'line-width': 5, // line width
+                    'line-color': '#ffffff', // line color
+                    'line-width': 2, // line width
                 },
             });
-            // // Add fill extrusion layer
-            // map.addLayer({
-            //     'id': 'pgext', // layer id
-            //     'type': 'fill-extrusion', // symbology type
-            //     'source': 'polygontest', // source id
-            //     'layout': {
-            //         'visibility': 'visible', // visibility of the layer
-            //     },
-            //     'paint': {
-            //         'fill-extrusion-base': 0, // base height
-            //         'fill-extrusion-color': '#529dcc', // extrusion color
-            //         'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
-            //         'fill-extrusion-opacity': 0.3, // extrusion opacity
-            //         'fill-extrusion-vertical-gradient': true, // darker farther down
-            //     },
-            // });
+            // Add fill extrusion layer
+            map.addLayer({
+                'id': 'pgext', // layer id
+                'type': 'fill-extrusion', // symbology type
+                'source': 'polygontest', // source id
+                'layout': {
+                    'visibility': 'visible', // visibility of the layer
+                },
+                'paint': {
+                    'fill-extrusion-base': 0, // base height
+                    'fill-extrusion-color': '#529dcc', // extrusion color
+                    'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
+                    'fill-extrusion-opacity': 0.5, // extrusion opacity
+                    'fill-extrusion-vertical-gradient': true, // darker farther down
+                },
+            });
 
 
             // Add lines
             // Add data source
             map.addSource('linetest', {
                 'type': 'geojson',
-                'data':'linetestcat.geojson', // if using relative path
+                'data': 'linetestcat.geojson', // if using relative path
                 // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetestcat.geojson', // if using url
                 lineMetrics: true, // only used for gradient line
             });
@@ -205,13 +232,19 @@
                 },
                 'paint': {
                     'line-blur': 0, // blur line
-                    'line-color': '#ff0000', // line color
+                    'line-color': [
+                        'match',
+                        ['get', 'cat'],
+                        'IRT', '#a1dab4',
+                        'BMT', '#41b6c4',
+                        'IND', '#2c7fb8',
+                        '#000000'
+                    ], // line color
                     // 'line-dasharray': [5, 5], // dash line
                     'line-opacity': 1, // line opacity
                     'line-width': 2, // line width
                 },
             });
-
 
             // Add points
             // Add data source
@@ -253,20 +286,8 @@
                     'circle-stroke-opacity': 1, // circle stroke opacity
                     'circle-stroke-width': 0.1, // circle stroke width
                 },
+                'minzoom': 10, // only show if zoom in
             });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -291,6 +312,10 @@
                 popup.remove();
             });
 
+
+
+
+
             // Add legend
             var layers = ['<=200', '201~400', '401~600', '601~800', '>800'];
             var colors = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
@@ -310,12 +335,60 @@
             };
 
 
+            // Add donwload image
             $('#downloadLink').click(function () {
                 var img = map.getCanvas().toDataURL()
                 this.href = img
             })
 
+
+
+
         });
+
+
+
+
+
+
+        var filterGroup = document.getElementById('layerfilter');
+        var filterID = ['pt', 'ln', 'pg', 'pgol', 'pgext'];
+        var filterLabel = ['Point', 'Line', 'Polygon', 'Polygon Outline', 'Polygon Extrusion'];
+
+
+        for (var i = 0; i < filterID.length; i++) {
+            var inputid = filterID[i];
+            var labeltext = filterLabel[i];
+
+            var input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = inputid;
+            input.checked = true;
+            filterGroup.appendChild(input);
+
+            var label = document.createElement('label');
+            label.setAttribute('for', inputid);
+            label.textContent = labeltext;
+            filterGroup.appendChild(label);
+
+            var linebreak = document.createElement("br");
+            filterGroup.appendChild(linebreak);
+
+            input.onclick = function (e) {
+                var clickedLayer = this.id;
+                var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+                if (visibility === 'visible') {
+                    map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                    this.className = '';
+                } else {
+                    this.className = 'active';
+                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                }
+            };
+        };
+
+
+
 
 
     </script>

@@ -30,4 +30,14 @@ ln.to_file(path+'linetestcat.geojson',driver='GeoJSON',index=True)
 
 
 
+pg=gpd.read_file(path+'polygontest.geojson')
+pg['PKDiffPct3'].describe(percentiles=np.arange(0.2,1,0.2))
+pg['cat']=np.where(pg['PKDiffPct3']>4,'>400%',
+          np.where(pg['PKDiffPct3']>3,'301%~400%',
+          np.where(pg['PKDiffPct3']>2,'201%~300%',
+          np.where(pg['PKDiffPct3']>1,'101%~200%',
+          '<=100%'))))
+pg.to_file(path+'polygontestcat.geojson',driver='GeoJSON',index=True)
+
+
 
