@@ -127,7 +127,7 @@
                 'top-left',
             );
 
-
+            
             // Add polygons
             // Add data source
             map.addSource('polygontest', {
@@ -166,30 +166,30 @@
                     'line-width': 5, // line width
                 },
             });
-            // Add fill extrusion layer
-            map.addLayer({
-                'id': 'pgext', // layer id
-                'type': 'fill-extrusion', // symbology type
-                'source': 'polygontest', // source id
-                'layout': {
-                    'visibility': 'visible', // visibility of the layer
-                },
-                'paint': {
-                    'fill-extrusion-base': 0, // base height
-                    'fill-extrusion-color': '#529dcc', // extrusion color
-                    'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
-                    'fill-extrusion-opacity': 0.3, // extrusion opacity
-                    'fill-extrusion-vertical-gradient': true, // darker farther down
-                },
-            });
+            // // Add fill extrusion layer
+            // map.addLayer({
+            //     'id': 'pgext', // layer id
+            //     'type': 'fill-extrusion', // symbology type
+            //     'source': 'polygontest', // source id
+            //     'layout': {
+            //         'visibility': 'visible', // visibility of the layer
+            //     },
+            //     'paint': {
+            //         'fill-extrusion-base': 0, // base height
+            //         'fill-extrusion-color': '#529dcc', // extrusion color
+            //         'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
+            //         'fill-extrusion-opacity': 0.3, // extrusion opacity
+            //         'fill-extrusion-vertical-gradient': true, // darker farther down
+            //     },
+            // });
 
 
             // Add lines
             // Add data source
             map.addSource('linetest', {
                 'type': 'geojson',
-                // 'data':'linetest.geojson', // if using relative path
-                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetest.geojson', // if using url
+                'data':'linetestcat.geojson', // if using relative path
+                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetestcat.geojson', // if using url
                 lineMetrics: true, // only used for gradient line
             });
             // Add line layer
@@ -217,14 +217,15 @@
             // Add data source
             map.addSource('pointtest', {
                 'type': 'geojson',
-                // 'data':'pointtestcat.geojson', // if using relative path
-                'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson', // if using url
+                'data': 'pointtestcat.geojson', // if using relative path
+                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson', // if using url
             });
             // Add circle layer
             map.addLayer({
                 'id': 'pt', // layer id
                 'type': 'circle', // symbology type
                 'source': 'pointtest', // source id
+                'filter': ['==', 'Borough', 'M'], // filter
                 'layout': {
                     'visibility': 'visible', // visibility of the layer
                 },
@@ -238,21 +239,19 @@
                         '401~600', '#fd9243',
                         '601~800', '#df4f05',
                         '>800', '#7f2704',
-                        '#ccc'
+                        '#000000'
                     ], // circle color
                     'circle-opacity': 1, // circle opacity
-
                     'circle-radius': {
-                        'base': 1.75,
+                        'base': 2,
                         'stops': [
-                            [12, 3],
-                            [22, 300]
+                            [12, 4],
+                            [22, 180]
                         ]
                     }, // circle radius; change size based on zoom level
-
                     'circle-stroke-color': '#000000', // circle stroke color
-                    'circle-stroke-opacity': 0.5, // circle stroke opacity
-                    'circle-stroke-width': 1, // circle stroke width
+                    'circle-stroke-opacity': 1, // circle stroke opacity
+                    'circle-stroke-width': 0.1, // circle stroke width
                 },
             });
 
