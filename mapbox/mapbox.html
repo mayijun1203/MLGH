@@ -9,7 +9,13 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+        type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 
     <style>
         body {
@@ -71,7 +77,6 @@
 
 
 <body>
-
     <div id="mainmap"></div>
     <div class='map-overlay' id='legend'></div>
     <div>
@@ -81,6 +86,7 @@
 
 
     <script>
+        'use strict';
         // Set MapBox token
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
 
@@ -98,7 +104,7 @@
             // bearingSnap: 7, // no need to change
             // pitchWithRotate: true, // turned on to enable rotation
             // clickTolerance: 3, // no need to change
-            // attributionControl: true, // show the credit bar
+            attributionControl: false, // show the credit bar
             // customAttribution: '<strong> NYC DCP </strong>', // add overall credit to the beggining
             // logoPosition: 'bottom-left', // no need to change 
             // failIfMajorPerformanceCaveat: false, // no need to change
@@ -117,7 +123,7 @@
             // doubleClickZoom: true, // no need to change
             // trackResize: false, // no need to change
             center: [-73.978331, 40.765735], // testing to get the centroid of bounds
-            zoom: 9.5, // set the initial zoom of the map view
+            zoom: 20, // set the initial zoom of the map view
             // bearing: 0, // no need to change; set the initial bearing of the map view
             // pitch: 0, // no need to change; set the initial pitch of the map view
             // bounds: [[-75, 40], [-73, 42]], // no need to change; if set, it'll override center and zoom
@@ -136,11 +142,37 @@
 
         // Add layers
         map.on('load', function () {
-            // Add Navigation Control
+
+            // Add geocoder control
+            map.addControl(new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+            }),
+                'top-left',
+            );
+
+            // Add navigation control
             map.addControl(new mapboxgl.NavigationControl({
-                'showCompass': true,
-                'showZoom': true,
-                'visualizePitch': true,
+                showCompass: true,
+                showZoom: true,
+                visualizePitch: true,
+            }),
+                'top-left',
+            );
+
+            // Add user location control
+            map.addControl(new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            }),
+                'top-left',
+            );
+
+            // Add full screen control
+            map.addControl(new mapboxgl.FullscreenControl({
+                container: document.querySelector('body'),
             }),
                 'top-left',
             );
@@ -153,6 +185,7 @@
                 'data': 'polygontestcat.geojson', // if using relative path
                 // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontestcat.geojson', // if using url
             });
+
             // Add fill layer
             map.addLayer({
                 'id': 'pg', // layer id
@@ -166,33 +199,35 @@
                     'fill-color': [
                         'match',
                         ['get', 'cat'],
-                        '<=100%', '#f7fcf5',
-                        '101%~200%', '#caeac3',
-                        '201%~300%', '#7bc87c',
-                        '301%~400%', '#2a924a',
-                        '>400%', '#00441b',
+                        '<=100%', '#e4e3f0',
+                        '101%~200%', '#babbdb',
+                        '201%~300%', '#8c88c0',
+                        '301%~400%', '#63439c',
+                        '>400%', '#3f007d',
                         '#000000'
                     ], // fill color
                     'fill-opacity': 1, // fill opacity
-                    // 'fill-outline-color': '#ffff00', // outline color
+                    'fill-outline-color': '#ffffff', // outline color; can only be set to 1px width; to change the outline width, add another line layer
                 },
             });
-            // Add fill outline layer
-            map.addLayer({
-                'id': 'pgol', // layer id
-                'type': 'line', // symbology type
-                'source': 'polygontest', // source id
-                'filter': ['==', 'BoroName', 'Queens'], // filter
-                'layout': {
-                    'line-cap': 'round', // line endings; butt/round/square
-                    'line-join': 'round', // line joining; bevel/round/miter
-                    'visibility': 'visible', // visibility of the layer
-                },
-                'paint': {
-                    'line-color': '#ffffff', // line color
-                    'line-width': 2, // line width
-                },
-            });
+
+            // // Add fill outline layer
+            // map.addLayer({
+            //     'id': 'pgol', // layer id
+            //     'type': 'line', // symbology type
+            //     'source': 'polygontest', // source id
+            //     'filter': ['==', 'BoroName', 'Queens'], // filter
+            //     'layout': {
+            //         'line-cap': 'round', // line endings; butt/round/square
+            //         'line-join': 'round', // line joining; bevel/round/miter
+            //         'visibility': 'visible', // visibility of the layer
+            //     },
+            //     'paint': {
+            //         'line-color': '#ffffff', // line color
+            //         'line-width': 1, // line width
+            //     },
+            // });
+
             // Add fill extrusion layer
             map.addLayer({
                 'id': 'pgext', // layer id
@@ -205,7 +240,7 @@
                     'fill-extrusion-base': 0, // base height
                     'fill-extrusion-color': '#529dcc', // extrusion color
                     'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
-                    'fill-extrusion-opacity': 0.5, // extrusion opacity
+                    'fill-extrusion-opacity': 0.1, // extrusion opacity
                     'fill-extrusion-vertical-gradient': true, // darker farther down
                 },
             });
@@ -219,6 +254,7 @@
                 // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetestcat.geojson', // if using url
                 lineMetrics: true, // only used for gradient line
             });
+
             // Add line layer
             map.addLayer({
                 'id': 'ln', // layer id
@@ -246,6 +282,7 @@
                 },
             });
 
+
             // Add points
             // Add data source
             map.addSource('pointtest', {
@@ -253,6 +290,7 @@
                 'data': 'pointtestcat.geojson', // if using relative path
                 // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson', // if using url
             });
+
             // Add circle layer
             map.addLayer({
                 'id': 'pt', // layer id
@@ -290,15 +328,18 @@
             });
 
 
-
-
-            // Add hover popup
+            // Add popup
             var popup = new mapboxgl.Popup({
-                closeButton: false,
-                closeOnClick: false
+                closeButton: true, // close button
+                closeOnClick: false, // close if click on map
+                closeOnMove: false, // close if move the map
+                anchor: 'bottom', // anchor of the popup
+                offset: 0, // offset from the feature
+                maxWidth: 'none', // max width of the popoup; 'none' to fit to the content                
             });
-            map.on('mouseenter', 'pt', function (e) {
-                map.getCanvas().style.cursor = 'pointer';
+
+            // Add point popup
+            map.on('click', 'pt', function (e) {
                 var coordinates = e.features[0].geometry.coordinates.slice();
                 var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
                 description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>"
@@ -307,11 +348,29 @@
                 }
                 popup.setLngLat(coordinates).setHTML(description).addTo(map);
             });
+            map.on('mouseenter', 'pt', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
             map.on('mouseleave', 'pt', function () {
                 map.getCanvas().style.cursor = '';
-                popup.remove();
             });
 
+            // Add line popup
+            map.on('click', 'ln', function (e) {
+                var coordinates = e.features[0].geometry.coordinates.slice();
+                var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
+                description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>"
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            });
+            map.on('mouseenter', 'ln', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'ln', function () {
+                map.getCanvas().style.cursor = '';
+            });
 
 
 
@@ -335,59 +394,62 @@
             };
 
 
+
+            var img = map.getCanvas().toDataURL()
+            this.href = img
+
+
+
+
+            // Add layer filer
+            var filterGroup = document.getElementById('layerfilter');
+            var filterID = ['pt', 'ln', 'pg', 'pgext'];
+            var filterLabel = ['Point', 'Line', 'Polygon', 'Polygon Extrusion'];
+
+
+            for (var i = 0; i < filterID.length; i++) {
+                var inputid = filterID[i];
+                var labeltext = filterLabel[i];
+
+                var input = document.createElement('input');
+                input.type = 'checkbox';
+                input.id = inputid;
+                input.checked = true;
+                filterGroup.appendChild(input);
+
+                var label = document.createElement('label');
+                label.setAttribute('for', inputid);
+                label.textContent = labeltext;
+                filterGroup.appendChild(label);
+
+                var linebreak = document.createElement("br");
+                filterGroup.appendChild(linebreak);
+
+                input.addEventListener('click', function (e) {
+                    var clickedLayer = this.id;
+                    var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+                    if (visibility === 'visible') {
+                        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                    } else {
+                        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                    }
+                });
+
+            };
+
+
+
+
             // Add donwload image
             $('#downloadLink').click(function () {
-                var img = map.getCanvas().toDataURL()
-                this.href = img
-            })
+
+            });
+
 
 
 
 
         });
-
-
-
-
-
-
-        var filterGroup = document.getElementById('layerfilter');
-        var filterID = ['pt', 'ln', 'pg', 'pgol', 'pgext'];
-        var filterLabel = ['Point', 'Line', 'Polygon', 'Polygon Outline', 'Polygon Extrusion'];
-
-
-        for (var i = 0; i < filterID.length; i++) {
-            var inputid = filterID[i];
-            var labeltext = filterLabel[i];
-
-            var input = document.createElement('input');
-            input.type = 'checkbox';
-            input.id = inputid;
-            input.checked = true;
-            filterGroup.appendChild(input);
-
-            var label = document.createElement('label');
-            label.setAttribute('for', inputid);
-            label.textContent = labeltext;
-            filterGroup.appendChild(label);
-
-            var linebreak = document.createElement("br");
-            filterGroup.appendChild(linebreak);
-
-            input.onclick = function (e) {
-                var clickedLayer = this.id;
-                var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-                if (visibility === 'visible') {
-                    map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                    this.className = '';
-                } else {
-                    this.className = 'active';
-                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                }
-            };
-        };
-
-
 
 
 
