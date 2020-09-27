@@ -7,7 +7,6 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script
         src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet"
@@ -15,6 +14,10 @@
         type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
+
+
+
 
 
 
@@ -114,14 +117,7 @@
     <script>
         'use strict';
         // Set MapBox token
-
-        var test = fetch('./token.json').then(response => response.json()).then(data => console.log(data));
-        var test
-
-
-
-
-        mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // still need to find a way to store the token
 
 
 
@@ -574,9 +570,31 @@
 
 
             // Add donwload image
-            $('#downloadLink').click(function () {
+            // document.getElementById('downloadLink').addEventListener('click', (function () {
+
+            //     var img = map.getCanvas().toDataURL('image/png')
+            //     this.href = img
+            // }));
+
+
+
+
+            $(document).ready(function () {
+
+
+
+                $("#downloadLink").on('click', function () {
+                    html2canvas($("#mainmap"), {
+                        onrendered: function (canvas) {
+                             canvas.toDataURL("image/png");
+                        }
+                        
+                    });
+                });
 
             });
+
+
 
 
 
