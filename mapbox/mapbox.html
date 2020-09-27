@@ -100,12 +100,16 @@
             font-family: sans-serif;
             line-height: 30px;
         }
+
+        #layerfilter label{
+            font-weight: bold;
+        }
     </style>
 </head>
 
 
 <body>
-    <div id="mainmap"></div>
+    <div id="mainmap"></div> <!-- placeholder for main map -->
 
     <nav class='map-overlay' id="layerfilter">
         <div>
@@ -121,7 +125,7 @@
 
 
 
-        // Create base map
+        // Initialize the map
         var map = new mapboxgl.Map({ // creating a new map
             container: 'mainmap', // same as the div id to place the map
             // minZoom: 0, // no need to change
@@ -135,7 +139,7 @@
             // pitchWithRotate: true, // turned on to enable rotation
             // clickTolerance: 3, // no need to change
             attributionControl: false, // show the credit bar
-            // customAttribution: '<strong> NYC DCP </strong>', // add overall credit to the beggining
+            // customAttribution: '<b> NYC DCP </b>', // add overall credit to the beggining
             // logoPosition: 'bottom-left', // no need to change 
             // failIfMajorPerformanceCaveat: false, // no need to change
             preserveDrawingBuffer: true, // make sure it's on to allow printing
@@ -181,16 +185,16 @@
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: mapboxgl
             }),
-                'top-left',
+                'top-left', // control position
             );
 
             // Add navigation control
             map.addControl(new mapboxgl.NavigationControl({
-                showCompass: true,
-                showZoom: true,
-                visualizePitch: true,
+                showCompass: true, // show compass
+                showZoom: true, // show zoom
+                visualizePitch: true, // show pitch
             }),
-                'top-left',
+                'top-left', // control position
             );
 
             // Add user location control
@@ -200,14 +204,14 @@
                 },
                 trackUserLocation: true
             }),
-                'top-left',
+                'top-left', // control position
             );
 
             // Add full screen control
             map.addControl(new mapboxgl.FullscreenControl({
                 container: document.querySelector('body'),
             }),
-                'top-left',
+                'top-left', // control position
             );
 
 
@@ -427,6 +431,7 @@
                 },
             });
 
+            
 
             // Add popup
             var popup = new mapboxgl.Popup({
@@ -439,49 +444,48 @@
             });
 
             // Add point popup
+            // Add click event
             map.on('click', 'pt', function (e) {
-                var coordinates = e.features[0].geometry.coordinates.slice();
-                var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>";
-                description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>";
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                var coordinates = e.features[0].geometry.coordinates.slice(); // get point coordinates
+                var description = "<b>Station: </b><span>" + e.features[0].properties.CplxName + "</span><br>"; // description in the popup
+                description += "<b>Entry: </b><span>" + e.features[0].properties.LatestEntries + "</span><br>";
+                popup.setLngLat(coordinates).setHTML(description).addTo(map); //add popup
             });
+            // Add hover events
             map.on('mouseenter', 'pt', function () {
-                map.getCanvas().style.cursor = 'pointer';
+                map.getCanvas().style.cursor = 'pointer'; // mouse becoming pointer
             });
             map.on('mouseleave', 'pt', function () {
                 map.getCanvas().style.cursor = '';
             });
 
             // Add line popup
+            // Add click event
             map.on('click', 'ln', function (e) {
-                var coordinates = e.lngLat;
-                var description = "<strong>Division: </strong><span>" + e.features[0].properties.div + "</span><br>";
-                description += "<strong>Routes: </strong><span>" + e.features[0].properties.oem_route + "</span><br>";
-                // popupCoordinatesXY = e.point;
-                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                var coordinates = e.lngLat; // get pointer coordinates
+                var description = "<b>Division: </b><span>" + e.features[0].properties.div + "</span><br>"; // description in the popup
+                description += "<b>Routes: </b><span>" + e.features[0].properties.oem_route + "</span><br>";
+                popup.setLngLat(coordinates).setHTML(description).addTo(map); //add popup
             });
+            // Add hover events
             map.on('mouseenter', 'ln', function () {
-                map.getCanvas().style.cursor = 'pointer';
+                map.getCanvas().style.cursor = 'pointer'; // mouse becoming pointer
             });
             map.on('mouseleave', 'ln', function () {
                 map.getCanvas().style.cursor = '';
             });
 
             // Add polygon popup
+            // Add click event
             map.on('click', 'pg', function (e) {
-                var coordinates = e.lngLat;
-                var description = "<strong>NTA: </strong><span>" + e.features[0].properties.NTAName + "</span><br>";
-                description += "<strong>Percent Change: </strong><span>" + e.features[0].properties.PKDiffPct3 + "</span><br>";
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
-                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+                var coordinates = e.lngLat; // get pointer coordinates
+                var description = "<b>NTA: </b><span>" + e.features[0].properties.NTAName + "</span><br>"; // description in the popup
+                description += "<b>Percent Change: </b><span>" + e.features[0].properties.PKDiffPct3 + "</span><br>";
+                popup.setLngLat(coordinates).setHTML(description).addTo(map); //add popup
             });
+            // Add hover events
             map.on('mouseenter', 'pg', function () {
-                map.getCanvas().style.cursor = 'pointer';
+                map.getCanvas().style.cursor = 'pointer'; // mouse becoming pointer
             });
             map.on('mouseleave', 'pg', function () {
                 map.getCanvas().style.cursor = '';
@@ -489,74 +493,54 @@
 
 
 
-
-
-
-            // // Add legend
-            // var layers = ['<=200', '201~400', '401~600', '601~800', '>800'];
-            // var colors = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
-            // for (i = 0; i < layers.length; i++) {
-            //     var layer = layers[i];
-            //     var color = colors[i];
-            //     var item = document.createElement('div');
-            //     var key = document.createElement('span');
-            //     key.className = 'legend-key';
-            //     key.style.backgroundColor = color;
-
-            //     var value = document.createElement('span');
-            //     value.innerHTML = layer;
-            //     item.appendChild(key);
-            //     item.appendChild(value);
-            //     legend.appendChild(item);
-            // };
-            // var img = map.getCanvas().toDataURL()
-            // this.href = img
-
-
-
-
-
             // Add layer selector and legend
+            var layerOrder = ['pt', 'ln', 'pg', 'pgext']; // set layer order in the legend
+            var layerContentListOrder = []; // create ordered layer content list
+            for (var i = 0; i < layerOrder.length; i++) {
+                layerContentListOrder.push(layerContentList.filter(e => e.layerid == layerOrder[i])[0]);
+            };
+
             var filterGroup = document.getElementById('layerfilter');
 
-            for (var i = 0; i < layerContentList.length; i++) {
-                var input = document.createElement('input');
+            for (var i = 0; i < layerContentListOrder.length; i++) {
+                // Create layer selector
+                var input = document.createElement('input'); // create input checkbox
                 input.type = 'checkbox';
-                input.id = layerContentList[i]['layerid'];
+                input.id = layerContentListOrder[i]['layerid'];
                 input.checked = true;
                 filterGroup.appendChild(input);
-
-                var label = document.createElement('label');
-                label.setAttribute('for', layerContentList[i]['layerid']);
-                label.textContent = layerContentList[i]['layername'];
+                var label = document.createElement('label'); // create checkbox label
+                label.setAttribute('for', layerContentListOrder[i]['layerid']);
+                label.textContent = layerContentListOrder[i]['layername'];
                 filterGroup.appendChild(label);
-
-                var linebreak = document.createElement("br");
+                var linebreak = document.createElement("br"); // add break line
                 filterGroup.appendChild(linebreak);
 
-                for (var j = 0; j < layerContentList[i]['layercat'].length; j++) {
-                    var item = document.createElement('div');
-                    item.className = layerContentList[i]['layerid'] + 'legend';
-                    var key = document.createElement('span');
-                    key.className = 'legend-key-' + layerContentList[i]['layertype'];
-                    key.style.backgroundColor = layerContentList[i]['layercolor'][j]
-                        .replace(',1)', ',' + layerContentList[i]['layeropacity'] + ')');
-                    var value = document.createElement('span');
-                    value.innerHTML = layerContentList[i]['layercat'][j];
+                // Create legend
+                for (var j = 0; j < layerContentListOrder[i]['layercat'].length; j++) {
+                    var item = document.createElement('div'); // create item
+                    item.className = layerContentListOrder[i]['layerid'] + 'legend';
+                    var key = document.createElement('span'); // create key
+                    key.className = 'legend-key-' + layerContentListOrder[i]['layertype'];
+                    key.style.backgroundColor = layerContentListOrder[i]['layercolor'][j]
+                        .replace(',1)', ',' + layerContentListOrder[i]['layeropacity'] + ')'); // set color with opacity
+                    var value = document.createElement('span'); // create label
+                    value.innerHTML = layerContentListOrder[i]['layercat'][j];
                     item.appendChild(key);
                     item.appendChild(value);
                     filterGroup.appendChild(item);
                 };
 
+                // Create click event
                 input.addEventListener('click', function (e) {
                     var clickedLayer = this.id;
                     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
                     var legendGroup = document.getElementsByClassName(clickedLayer + 'legend');
                     if (visibility === 'visible') {
-                        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                        map.setLayoutProperty(clickedLayer, 'visibility', 'none'); // set layer visibility
                         for (var k = 0; k < legendGroup.length; k++) {
                             legendGroup[k].style.display = 'none';
-                        }
+                        } // set legend visibility
                     } else {
                         map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
                         for (var k = 0; k < legendGroup.length; k++) {
@@ -595,7 +579,6 @@
             });
 
 
-            console.log(layerContentList);
 
 
         });
