@@ -39,5 +39,3 @@ pg['cat']=np.where(pg['PKDiffPct3']>4,'>400%',
           np.where(pg['PKDiffPct3']>1,'101%~200%',
           '<=100%'))))
 pg.to_file(path+'polygontestcat.geojson',driver='GeoJSON',index=True)
-
-

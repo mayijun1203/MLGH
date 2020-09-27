@@ -18,6 +18,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script>
 
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
 
 
 
@@ -154,8 +155,8 @@
             // touchPitch: true, // no need to change
             // doubleClickZoom: true, // no need to change
             // trackResize: false, // no need to change
-            center: [-73.978331, 40.765735], // testing to get the centroid of bounds
-            zoom: 20, // set the initial zoom of the map view
+            center: [-74.0197, 40.721], // testing to get the centroid of bounds
+            zoom: 10, // set the initial zoom of the map view
             // bearing: 0, // no need to change; set the initial bearing of the map view
             // pitch: 0, // no need to change; set the initial pitch of the map view
             // bounds: [[-75, 40], [-73, 42]], // no need to change; if set, it'll override center and zoom
@@ -558,6 +559,15 @@
             //     this.href = img
 
             // }));
+
+
+            // // Fit bounds to one data source
+            // fetch('https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson')
+            //     .then(res=>res.json())
+            //     .then(data1=>map.fitBounds(turf.bbox(data)));
+
+
+
 
 
         });
