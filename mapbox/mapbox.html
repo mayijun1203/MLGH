@@ -15,7 +15,8 @@
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://files.codepedia.info/files/uploads/iScripts/html2canvas.js"></script>
 
 
 
@@ -569,30 +570,14 @@
 
 
 
-            // Add donwload image
+            // // Add donwload image
             // document.getElementById('downloadLink').addEventListener('click', (function () {
 
             //     var img = map.getCanvas().toDataURL('image/png')
             //     this.href = img
+
             // }));
 
-
-
-
-            $(document).ready(function () {
-
-
-
-                $("#downloadLink").on('click', function () {
-                    html2canvas($("#mainmap"), {
-                        onrendered: function (canvas) {
-                             canvas.toDataURL("image/png");
-                        }
-                        
-                    });
-                });
-
-            });
 
 
 
