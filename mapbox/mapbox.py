@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import geopandas as gpd
+import json
 
 
 pd.set_option('display.max_columns', None)
@@ -40,4 +41,4 @@ pg['cat']=np.where(pg['PKDiffPct3']>4,'>400%',
 pg.to_file(path+'polygontestcat.geojson',driver='GeoJSON',index=True)
 
 
-
+pd.read_json(path+'token.json')
