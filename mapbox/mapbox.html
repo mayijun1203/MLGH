@@ -117,16 +117,9 @@
 
         var test = fetch('./token.json').then(response => response.json()).then(data => console.log(data));
         var test
-        fetch('./token.json').then(response => response.json()).then(data => test = data);
+        fetch('https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/token.json').then(response => response.json()).then(data => test = data);
 
-            fetch('./token.json', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-                .then((response) => response.json())
-                .then((messages) => { console.log("messages"); });
+
 
 
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
