@@ -51,12 +51,12 @@
         }
 
         .legend-value {
-            display:block;
+            display: block;
         }
 
-        .legend-key-point {
+        .legend-key-circle {
             display: inline-block;
-            border-radius: 20%;
+            border-radius: 100%;
             width: 10px;
             height: 10px;
             margin-right: 5px;
@@ -67,6 +67,22 @@
             border-radius: 20%;
             width: 10px;
             height: 1px;
+            margin-right: 5px;
+        }
+
+        .legend-key-fill {
+            display: inline-block;
+            border-radius: 0%;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+        }
+
+        .legend-key-fill-extrusion {
+            display: inline-block;
+            border-radius: 0%;
+            width: 10px;
+            height: 10px;
             margin-right: 5px;
         }
 
@@ -84,27 +100,25 @@
             font-family: sans-serif;
             line-height: 30px;
         }
-
-        .ptlegend {
-            display: block;
-        }
     </style>
 </head>
 
 
 <body>
     <div id="mainmap"></div>
-    <div class='map-overlay' id='legend'></div>
-    <div>
-        <a id="downloadLink" href="" download="map.png">Download ↓</a>
-    </div>
-    <nav id="layerfilter"></nav>
+
+    <nav class='map-overlay' id="layerfilter">
+        <div>
+            <a id="downloadLink" href="" download="map.png">Download ↓</a>
+        </div>
+    </nav>
 
 
     <script>
         'use strict';
         // Set MapBox token
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
+
 
 
         // Create base map
@@ -156,8 +170,11 @@
         });
 
 
+
         // Add layers
         map.on('load', function () {
+
+            var layerContentList = []; // store all the layer contents
 
             // Add geocoder control
             map.addControl(new MapboxGeocoder({
@@ -194,153 +211,220 @@
             );
 
 
+
             // Add polygons
+            // Set layer contents
+            var layerContent = {
+                'sourceid': 'polygontest', // source id
+                'sourcetype': 'geojson', // source type
+                'sourcedata': 'polygontestcat.geojson', // data source
+                'layerid': 'pg', // layer id
+                'layertype': 'fill', // symbology type
+                'layername': 'Polygon', // layer name for the legend
+                'layerfilter': ['==', 'BoroName', 'Queens'], // filter
+                'layervisibility': 'visible', // visibility of the layer
+                'layercolname': 'cat', // category column name
+                'layercat': ['<=100%', '101%~200%', '201%~300%', '301%~400%', '>400%'], // categories
+                'layercolor': ['rgba(228,227,240,1)', 'rgba(186,187,219,1)', 'rgba(140,136,192,1)', 'rgba(99,67,156,1)', 'rgba(63,0,125,1)'], // color for each category; use rgba
+                'layeropacity': 1, // fill opacity
+                'layeroutlinecolor': '#ffffff', // outline color; can only be set to 1px width; to change the outline width, add another line layer
+            };
+
+            // Generate layer colors
+            var layerColor = ['match', ['get', layerContent['layercolname']]];
+            for (var i = 0; i < layerContent.layercat.length; i++) {
+                layerColor.push(layerContent.layercat[i]);
+                layerColor.push(layerContent.layercolor[i]);
+            };
+            layerColor.push('#000000');
+
+            // Add layer content to the overall layer content list
+            layerContentList.push(layerContent);
+
             // Add data source
-            map.addSource('polygontest', {
-                'type': 'geojson',
-                'data': 'polygontestcat.geojson', // if using relative path
-                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/polygontestcat.geojson', // if using url
+            map.addSource(layerContent['sourceid'], {
+                'type': layerContent['sourcetype'],
+                'data': layerContent['sourcedata'],
             });
 
             // Add fill layer
             map.addLayer({
-                'id': 'pg', // layer id
-                'type': 'fill', // symbology type
-                'source': 'polygontest', // source id
-                'filter': ['==', 'BoroName', 'Queens'], // filter
+                'id': layerContent['layerid'],
+                'type': layerContent['layertype'],
+                'source': layerContent['sourceid'],
+                'filter': layerContent['layerfilter'],
                 'layout': {
-                    'visibility': 'visible', // visibility of the layer
+                    'visibility': layerContent['layervisibility'],
                 },
                 'paint': {
-                    'fill-color': [
-                        'match',
-                        ['get', 'cat'],
-                        '<=100%', '#e4e3f0',
-                        '101%~200%', '#babbdb',
-                        '201%~300%', '#8c88c0',
-                        '301%~400%', '#63439c',
-                        '>400%', '#3f007d',
-                        '#000000'
-                    ], // fill color
-                    'fill-opacity': 1, // fill opacity
-                    'fill-outline-color': '#ffffff', // outline color; can only be set to 1px width; to change the outline width, add another line layer
+                    'fill-color': layerColor,
+                    'fill-opacity': layerContent['layeropacity'],
+                    'fill-outline-color': layerContent['layeroutlinecolor'],
                 },
             });
 
-            // // Add fill outline layer
-            // map.addLayer({
-            //     'id': 'pgol', // layer id
-            //     'type': 'line', // symbology type
-            //     'source': 'polygontest', // source id
-            //     'filter': ['==', 'BoroName', 'Queens'], // filter
-            //     'layout': {
-            //         'line-cap': 'round', // line endings; butt/round/square
-            //         'line-join': 'round', // line joining; bevel/round/miter
-            //         'visibility': 'visible', // visibility of the layer
-            //     },
-            //     'paint': {
-            //         'line-color': '#ffffff', // line color
-            //         'line-width': 1, // line width
-            //     },
-            // });
-
-            // Add fill extrusion layer
-            map.addLayer({
-                'id': 'pgext', // layer id
-                'type': 'fill-extrusion', // symbology type
-                'source': 'polygontest', // source id
-                'layout': {
-                    'visibility': 'visible', // visibility of the layer
-                },
-                'paint': {
-                    'fill-extrusion-base': 0, // base height
-                    'fill-extrusion-color': '#529dcc', // extrusion color
-                    'fill-extrusion-height': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
-                    'fill-extrusion-opacity': 0.1, // extrusion opacity
-                    'fill-extrusion-vertical-gradient': true, // darker farther down
-                },
-            });
 
 
             // Add lines
+            // Set layer contents
+            var layerContent = {
+                'sourceid': 'linetest', // source id
+                'sourcetype': 'geojson', // source type
+                'sourcedata': 'linetestcat.geojson', // data source
+                'sourcelinemetrics': true, // only used for gradient line
+                'layerid': 'ln', // layer id
+                'layertype': 'line', // symbology type
+                'layername': 'Line', // layer name for the legend
+                'layerfilter': ['==', 'type', 'Main Line'], // filter
+                'layerlinecap': 'round', // line endings; butt/round/square
+                'layerlinejoin': 'round', // line joining; bevel/round/miter
+                'layervisibility': 'visible', // visibility of the layer
+                'layerblur': 0, // blur line
+                'layercolname': 'cat', // category column name
+                'layercat': ['IRT', 'BMT', 'IND'], // categories
+                'layercolor': ['rgba(161,218,180,1)', 'rgba(65,182,196,1)', 'rgba(44,127,184,1)'], // color for each category; use rgba
+                'layerdasharray': [10, 10], // dash line
+                'layeropacity': 1, // line opacity
+                'layerwidth': 2, // line width
+            };
+
+            // Generate layer colors
+            var layerColor = ['match', ['get', layerContent['layercolname']]];
+            for (var i = 0; i < layerContent.layercat.length; i++) {
+                layerColor.push(layerContent.layercat[i]);
+                layerColor.push(layerContent.layercolor[i]);
+            };
+            layerColor.push('#000000');
+
+            // Add layer content to the overall layer content list
+            layerContentList.push(layerContent);
+
             // Add data source
-            map.addSource('linetest', {
-                'type': 'geojson',
-                'data': 'linetestcat.geojson', // if using relative path
-                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/linetestcat.geojson', // if using url
-                lineMetrics: true, // only used for gradient line
+            map.addSource(layerContent['sourceid'], {
+                'type': layerContent['sourcetype'],
+                'data': layerContent['sourcedata'],
+                'lineMetrics': layerContent['sourcelinemetrics'],
             });
 
             // Add line layer
             map.addLayer({
-                'id': 'ln', // layer id
-                'type': 'line', // symbology type
-                'source': 'linetest', // source id
-                'filter': ['==', 'type', 'Main Line'], // filter
+                'id': layerContent['layerid'],
+                'type': layerContent['layertype'],
+                'source': layerContent['sourceid'],
+                'filter': layerContent['layerfilter'],
                 'layout': {
-                    'line-cap': 'round', // line endings; butt/round/square
-                    'line-join': 'round', // line joining; bevel/round/miter
-                    'visibility': 'visible', // visibility of the layer
+                    'line-cap': layerContent['layerlinecap'],
+                    'line-join': layerContent['layerlinejoin'],
+                    'visibility': layerContent['layervisibility'],
                 },
                 'paint': {
-                    'line-blur': 0, // blur line
-                    'line-color': [
-                        'match',
-                        ['get', 'cat'],
-                        'IRT', '#a1dab4',
-                        'BMT', '#41b6c4',
-                        'IND', '#2c7fb8',
-                        '#000000'
-                    ], // line color
-                    // 'line-dasharray': [5, 5], // dash line
-                    'line-opacity': 1, // line opacity
-                    'line-width': 2, // line width
+                    'line-blur': layerContent['layerblur'],
+                    'line-color': layerColor,
+                    // 'line-dasharray': layerContent['layerdasharray'],
+                    'line-opacity': layerContent['layeropacity'],
+                    'line-width': layerContent['layerwidth'],
                 },
             });
 
 
+
             // Add points
+            // Set layer contents
+            var layerContent = {
+                'sourceid': 'pointtest', // source id
+                'sourcetype': 'geojson', // source type
+                'sourcedata': 'pointtestcat.geojson', // data source
+                'layerid': 'pt', // layer id
+                'layertype': 'circle', // symbology type
+                'layername': 'Point', // layer name for the legend
+                'layerfilter': ['==', 'Borough', 'M'], // filter
+                'layervisibility': 'visible', // visibility of the layer
+                'layerblur': 0, // blur circle
+                'layercolname': 'cat', // category column name
+                'layercat': ['<=200', '201~400', '401~600', '601~800', '>800'], // categories
+                'layercolor': ['rgba(255,245,235,1)', 'rgba(254,210,166,1)', 'rgba(253,146,67,1)', 'rgba(223,79,5,1)', 'rgba(127,39,4,1)'], // color for each category; use rgba
+                'layeropacity': 1, // circle opacity
+                'layerradius': { 'base': 2, 'stops': [[12, 4], [22, 180]] }, // circle radius; change size based on zoom level
+                'layerstrokecolor': '#000000', // circle stroke color
+                'layerstrokeopacity': 1, // circle stroke opacity
+                'layerstrokewidth': 0.1, // circle stroke width
+                'layerminzoom': 10, // only show if zoom in the certain level
+            };
+
+            // Generate layer colors
+            var layerColor = ['match', ['get', layerContent['layercolname']]];
+            for (var i = 0; i < layerContent.layercat.length; i++) {
+                layerColor.push(layerContent.layercat[i]);
+                layerColor.push(layerContent.layercolor[i]);
+            };
+            layerColor.push('#000000');
+
+            // Add layer content to the overall layer content list
+            layerContentList.push(layerContent);
+
             // Add data source
-            map.addSource('pointtest', {
-                'type': 'geojson',
-                'data': 'pointtestcat.geojson', // if using relative path
-                // 'data': 'https://raw.githubusercontent.com/mayijun1203/MLGH/master/mapbox/pointtestcat.geojson', // if using url
+            map.addSource(layerContent['sourceid'], {
+                'type': layerContent['sourcetype'],
+                'data': layerContent['sourcedata'],
             });
 
             // Add circle layer
             map.addLayer({
-                'id': 'pt', // layer id
-                'type': 'circle', // symbology type
-                'source': 'pointtest', // source id
-                'filter': ['==', 'Borough', 'M'], // filter
+                'id': layerContent['layerid'],
+                'type': layerContent['layertype'],
+                'source': layerContent['sourceid'],
+                'filter': layerContent['layerfilter'],
                 'layout': {
-                    'visibility': 'visible', // visibility of the layer
+                    'visibility': layerContent['layervisibility'],
                 },
                 'paint': {
-                    'circle-blur': 0, // blur circle
-                    'circle-color': [
-                        'match',
-                        ['get', 'cat'],
-                        '<=200', '#fff5eb',
-                        '201~400', '#fed2a6',
-                        '401~600', '#fd9243',
-                        '601~800', '#df4f05',
-                        '>800', '#7f2704',
-                        '#000000'
-                    ], // circle color
-                    'circle-opacity': 1, // circle opacity
-                    'circle-radius': {
-                        'base': 2,
-                        'stops': [
-                            [12, 4],
-                            [22, 180]
-                        ]
-                    }, // circle radius; change size based on zoom level
-                    'circle-stroke-color': '#000000', // circle stroke color
-                    'circle-stroke-opacity': 1, // circle stroke opacity
-                    'circle-stroke-width': 0.1, // circle stroke width
+                    'circle-blur': layerContent['layerblur'],
+                    'circle-color': layerColor,
+                    'circle-opacity': layerContent['layeropacity'],
+                    'circle-radius': layerContent['layerradius'],
+                    'circle-stroke-color': layerContent['layerstrokecolor'],
+                    'circle-stroke-opacity': layerContent['layerstrokeopacity'],
+                    'circle-stroke-width': layerContent['layerstrokewidth'],
                 },
-                'minzoom': 10, // only show if zoom in
+                'minzoom': layerContent['layerminzoom'],
+            });
+
+
+
+            // Add fill extrusion
+            // Set layer contents
+            var layerContent = {
+                'sourceid': 'polygontest', // source id
+                'sourcetype': 'geojson', // source type
+                'sourcedata': 'polygontestcat.geojson', // data source
+                'layerid': 'pgext', // layer id
+                'layertype': 'fill-extrusion', // symbology type
+                'layername': 'Extrusion', // layer name for the legend
+                'layervisibility': 'visible', // visibility of the layer
+                'layerbase': 0, // base height
+                'layercat': [''], // categories
+                'layercolor': ['rgba(82,157,204,1)'], // extrusion color; use rgba
+                'layerheight': ['/', ['get', 'PK202009'], 10], // extrusion height; get the field and divide it by 10
+                'layeropacity': 0.1,// extrusion opacity
+            };
+
+            // Add layer content to the overall layer content list
+            layerContentList.push(layerContent);
+
+            // Add fill extrusion layer
+            map.addLayer({
+                'id': layerContent['layerid'],
+                'type': layerContent['layertype'],
+                'source': layerContent['sourceid'],
+                'layout': {
+                    'visibility': layerContent['layervisibility'],
+                },
+                'paint': {
+                    'fill-extrusion-base': layerContent['layerbase'],
+                    'fill-extrusion-color': layerContent['layercolor'][0],
+                    'fill-extrusion-height': layerContent['layerheight'],
+                    'fill-extrusion-opacity': layerContent['layeropacity'],
+                },
             });
 
 
@@ -432,57 +516,33 @@
 
 
 
-
-            // Add layer filer
+            // Add layer selector and legend
             var filterGroup = document.getElementById('layerfilter');
-            var testid = 'pt';
-            var testlabel = 'Point';
-            var testtype = 'point';
-            var testcat = ['<=200', '201~400', '401~600', '601~800', '>800'];
-            var testcolor = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
-            var test = [
-                {
-                    'id': testid,
-                    'label': testlabel,
-                    'type': testtype,
-                    'cat': testcat,
-                    'color': testcolor,
-                },
-                {
-                    'id': 'ln',
-                    'label': 'Line',
-                    'type': 'line',
-                    'cat': ['IRT', 'BMT', 'IND'],
-                    'color': ['#a1dab4', '#41b6c4', '#2c7fb8'],
-                },];
 
-
-
-            for (var i = 0; i < test.length; i++) {
+            for (var i = 0; i < layerContentList.length; i++) {
                 var input = document.createElement('input');
                 input.type = 'checkbox';
-                input.id = test[i]['id'];
+                input.id = layerContentList[i]['layerid'];
                 input.checked = true;
                 filterGroup.appendChild(input);
 
                 var label = document.createElement('label');
-                label.setAttribute('for', test[i]['id']);
-                label.textContent = test[i]['label'];
+                label.setAttribute('for', layerContentList[i]['layerid']);
+                label.textContent = layerContentList[i]['layername'];
                 filterGroup.appendChild(label);
 
                 var linebreak = document.createElement("br");
                 filterGroup.appendChild(linebreak);
 
-                for (var j = 0; j < test[i]['cat'].length; j++) {
-                    var cat = test[i]['cat'][j];
-                    var clr = test[i]['color'][j];
+                for (var j = 0; j < layerContentList[i]['layercat'].length; j++) {
                     var item = document.createElement('div');
-                    item.className = test[i]['id'] + 'legend';
+                    item.className = layerContentList[i]['layerid'] + 'legend';
                     var key = document.createElement('span');
-                    key.className = 'legend-key-' + test[i]['type'];
-                    key.style.backgroundColor = clr;
+                    key.className = 'legend-key-' + layerContentList[i]['layertype'];
+                    key.style.backgroundColor = layerContentList[i]['layercolor'][j]
+                        .replace(',1)', ',' + layerContentList[i]['layeropacity'] + ')');
                     var value = document.createElement('span');
-                    value.innerHTML = cat;
+                    value.innerHTML = layerContentList[i]['layercat'][j];
                     item.appendChild(key);
                     item.appendChild(value);
                     filterGroup.appendChild(item);
@@ -491,20 +551,34 @@
                 input.addEventListener('click', function (e) {
                     var clickedLayer = this.id;
                     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-                    var legendid = document.getElementsByClassName(clickedLayer + 'legend');
+                    var legendGroup = document.getElementsByClassName(clickedLayer + 'legend');
                     if (visibility === 'visible') {
                         map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                        for (var k = 0; k < legendid.length; k++) {
-                            legendid[k].style.display = 'none';
+                        for (var k = 0; k < legendGroup.length; k++) {
+                            legendGroup[k].style.display = 'none';
                         }
                     } else {
                         map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                        for (var k = 0; k < legendid.length; k++) {
-                            legendid[k].style.display = 'block';
+                        for (var k = 0; k < legendGroup.length; k++) {
+                            legendGroup[k].style.display = 'block';
                         }
                     }
                 });
             };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -521,7 +595,7 @@
             });
 
 
-
+            console.log(layerContentList);
 
 
         });
