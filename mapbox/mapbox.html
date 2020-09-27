@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-
 <head>
     <meta charset="utf-8" />
     <title>Mapbox Testing</title>
@@ -17,6 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
 
+
+
     <style>
         body {
             margin: 0;
@@ -30,90 +31,82 @@
             width: 100%;
         }
 
-        .map-overlay {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.8);
-            margin-right: 20px;
-            font-family: Arial, sans-serif;
-            overflow: auto;
-            border-radius: 3px;
-        }
-
         #legend {
-            padding: 10px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            line-height: 18px;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: auto;
             height: auto;
-            margin-bottom: 40px;
-            width: 100px;
+            padding: 1rem;
+            line-height: 1.5rem;
+            color: #000000;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-family: sans-serif;
+            font-size: 1rem;
         }
 
-        .legend-value {
-            display: block;
+        #legend label {
+            font-weight: bold;
+        }
+
+        #legend input {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 1rem;
+            margin-top: 1rem;
+            vertical-align: -0.1rem;
         }
 
         .legend-key-circle {
-            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            margin-left: 0.25rem;
+            margin-right: 1rem;
             border-radius: 100%;
-            width: 10px;
-            height: 10px;
-            margin-right: 5px;
+            display: inline-block;
+            vertical-align: -0.15rem;
         }
 
         .legend-key-line {
+            width: 1rem;
+            height: 0.3rem;
+            margin-left: 0.25rem;
+            margin-right: 1rem;
+            border-radius: 0%;
             display: inline-block;
-            border-radius: 20%;
-            width: 10px;
-            height: 1px;
-            margin-right: 5px;
+            vertical-align: 0.25rem;
         }
 
         .legend-key-fill {
-            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            margin-left: 0.25rem;
+            margin-right: 1rem;
             border-radius: 0%;
-            width: 10px;
-            height: 10px;
-            margin-right: 5px;
+            display: inline-block;
+            vertical-align: -0.15rem;
         }
 
         .legend-key-fill-extrusion {
-            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            margin-left: 0.25rem;
+            margin-right: 1rem;
             border-radius: 0%;
-            width: 10px;
-            height: 10px;
-            margin-right: 5px;
-        }
-
-        #layerfilter {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 150px;
-            height: auto;
-            color: #000000;
             display: inline-block;
-            background-color: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-            padding: 10px;
-            font-family: sans-serif;
-            line-height: 30px;
-        }
-
-        #layerfilter label{
-            font-weight: bold;
+            vertical-align: -0.15rem;
         }
     </style>
 </head>
 
 
+
 <body>
     <div id="mainmap"></div> <!-- placeholder for main map -->
 
-    <nav class='map-overlay' id="layerfilter">
+    <nav id="legend">
         <div>
-            <a id="downloadLink" href="" download="map.png">Download ↓</a>
+            <a id="downloadLink" href="" download="map.png">Export to image</a>
         </div>
     </nav>
 
@@ -121,6 +114,21 @@
     <script>
         'use strict';
         // Set MapBox token
+
+        var test = fetch('./token.json').then(response => response.json()).then(data => console.log(data));
+        var test
+        fetch('./token.json').then(response => response.json()).then(data => test = data);
+
+            fetch('./token.json', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then((response) => response.json())
+                .then((messages) => { console.log("messages"); });
+
+
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF5aWp1biIsImEiOiJjaXg4ZmlyY20wMDBjMm9tcjI0bjQ0Z21zIn0.Io0XJ4JelN903V9HGo4TfQ'; // find a way to store the token
 
 
@@ -390,7 +398,7 @@
                     'circle-stroke-opacity': layerContent['layerstrokeopacity'],
                     'circle-stroke-width': layerContent['layerstrokewidth'],
                 },
-                'minzoom': layerContent['layerminzoom'],
+                // 'minzoom': layerContent['layerminzoom'],
             });
 
 
@@ -431,7 +439,7 @@
                 },
             });
 
-            
+
 
             // Add popup
             var popup = new mapboxgl.Popup({
@@ -500,7 +508,7 @@
                 layerContentListOrder.push(layerContentList.filter(e => e.layerid == layerOrder[i])[0]);
             };
 
-            var filterGroup = document.getElementById('layerfilter');
+            var filterLegend = document.getElementById('legend');
 
             for (var i = 0; i < layerContentListOrder.length; i++) {
                 // Create layer selector
@@ -508,13 +516,13 @@
                 input.type = 'checkbox';
                 input.id = layerContentListOrder[i]['layerid'];
                 input.checked = true;
-                filterGroup.appendChild(input);
+                filterLegend.appendChild(input);
                 var label = document.createElement('label'); // create checkbox label
                 label.setAttribute('for', layerContentListOrder[i]['layerid']);
                 label.textContent = layerContentListOrder[i]['layername'];
-                filterGroup.appendChild(label);
+                filterLegend.appendChild(label);
                 var linebreak = document.createElement("br"); // add break line
-                filterGroup.appendChild(linebreak);
+                filterLegend.appendChild(linebreak);
 
                 // Create legend
                 for (var j = 0; j < layerContentListOrder[i]['layercat'].length; j++) {
@@ -528,7 +536,7 @@
                     value.innerHTML = layerContentListOrder[i]['layercat'][j];
                     item.appendChild(key);
                     item.appendChild(value);
-                    filterGroup.appendChild(item);
+                    filterLegend.appendChild(item);
                 };
 
                 // Create click event
