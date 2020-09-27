@@ -230,7 +230,7 @@
                 'layercat': ['<=100%', '101%~200%', '201%~300%', '301%~400%', '>400%'], // categories
                 'layercolor': ['rgba(228,227,240,1)', 'rgba(186,187,219,1)', 'rgba(140,136,192,1)', 'rgba(99,67,156,1)', 'rgba(63,0,125,1)'], // color for each category; use rgba
                 'layeropacity': 1, // fill opacity
-                'layeroutlinecolor': '#ffffff', // outline color; can only be set to 1px width; to change the outline width, add another line layer
+                'layeroutlinecolor': 'rgba(255,255,255,0.5)', // outline color; can only be set to 1px width; to change the outline width, add another line layer
             };
 
             // Generate layer colors
@@ -348,9 +348,9 @@
                 'layercolor': ['rgba(255,245,235,1)', 'rgba(254,210,166,1)', 'rgba(253,146,67,1)', 'rgba(223,79,5,1)', 'rgba(127,39,4,1)'], // color for each category; use rgba
                 'layeropacity': 1, // circle opacity
                 'layerradius': { 'base': 2, 'stops': [[12, 4], [22, 180]] }, // circle radius; change size based on zoom level
-                'layerstrokecolor': '#000000', // circle stroke color
+                'layerstrokecolor': 'rgb(255,255,255)', // circle stroke color
                 'layerstrokeopacity': 1, // circle stroke opacity
-                'layerstrokewidth': 0.1, // circle stroke width
+                'layerstrokewidth': 0.5, // circle stroke width
                 'layerminzoom': 10, // only show if zoom in the certain level
             };
 
