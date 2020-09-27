@@ -50,11 +50,23 @@
             width: 100px;
         }
 
-        .legend-key {
+        .legend-value {
+            display:block;
+        }
+
+        .legend-key-point {
             display: inline-block;
             border-radius: 20%;
             width: 10px;
             height: 10px;
+            margin-right: 5px;
+        }
+
+        .legend-key-line {
+            display: inline-block;
+            border-radius: 20%;
+            width: 10px;
+            height: 1px;
             margin-right: 5px;
         }
 
@@ -63,7 +75,7 @@
             top: 10px;
             right: 10px;
             width: 150px;
-            height: 150px;
+            height: auto;
             color: #000000;
             display: inline-block;
             background-color: rgba(255, 255, 255, 0.8);
@@ -71,6 +83,10 @@
             padding: 10px;
             font-family: sans-serif;
             line-height: 30px;
+        }
+
+        .ptlegend {
+            display: block;
         }
     </style>
 </head>
@@ -341,8 +357,8 @@
             // Add point popup
             map.on('click', 'pt', function (e) {
                 var coordinates = e.features[0].geometry.coordinates.slice();
-                var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
-                description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>"
+                var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>";
+                description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>";
                 while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
                 }
@@ -357,12 +373,10 @@
 
             // Add line popup
             map.on('click', 'ln', function (e) {
-                var coordinates = e.features[0].geometry.coordinates.slice();
-                var description = "<strong>Station: </strong><span>" + e.features[0].properties.CplxName + "</span><br>"
-                description += "<strong>Entry: </strong><span>" + e.features[0].properties.LatestEntries + "</span><br>"
-                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                }
+                var coordinates = e.lngLat;
+                var description = "<strong>Division: </strong><span>" + e.features[0].properties.div + "</span><br>";
+                description += "<strong>Routes: </strong><span>" + e.features[0].properties.oem_route + "</span><br>";
+                // popupCoordinatesXY = e.point;
                 popup.setLngLat(coordinates).setHTML(description).addTo(map);
             });
             map.on('mouseenter', 'ln', function () {
@@ -372,70 +386,131 @@
                 map.getCanvas().style.cursor = '';
             });
 
+            // Add polygon popup
+            map.on('click', 'pg', function (e) {
+                var coordinates = e.lngLat;
+                var description = "<strong>NTA: </strong><span>" + e.features[0].properties.NTAName + "</span><br>";
+                description += "<strong>Percent Change: </strong><span>" + e.features[0].properties.PKDiffPct3 + "</span><br>";
+                while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                }
+                popup.setLngLat(coordinates).setHTML(description).addTo(map);
+            });
+            map.on('mouseenter', 'pg', function () {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'pg', function () {
+                map.getCanvas().style.cursor = '';
+            });
 
 
 
-            // Add legend
-            var layers = ['<=200', '201~400', '401~600', '601~800', '>800'];
-            var colors = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
-            for (i = 0; i < layers.length; i++) {
-                var layer = layers[i];
-                var color = colors[i];
-                var item = document.createElement('div');
-                var key = document.createElement('span');
-                key.className = 'legend-key';
-                key.style.backgroundColor = color;
-
-                var value = document.createElement('span');
-                value.innerHTML = layer;
-                item.appendChild(key);
-                item.appendChild(value);
-                legend.appendChild(item);
-            };
 
 
 
-            var img = map.getCanvas().toDataURL()
-            this.href = img
+            // // Add legend
+            // var layers = ['<=200', '201~400', '401~600', '601~800', '>800'];
+            // var colors = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
+            // for (i = 0; i < layers.length; i++) {
+            //     var layer = layers[i];
+            //     var color = colors[i];
+            //     var item = document.createElement('div');
+            //     var key = document.createElement('span');
+            //     key.className = 'legend-key';
+            //     key.style.backgroundColor = color;
+
+            //     var value = document.createElement('span');
+            //     value.innerHTML = layer;
+            //     item.appendChild(key);
+            //     item.appendChild(value);
+            //     legend.appendChild(item);
+            // };
+            // var img = map.getCanvas().toDataURL()
+            // this.href = img
+
+
 
 
 
 
             // Add layer filer
             var filterGroup = document.getElementById('layerfilter');
-            var filterID = ['pt', 'ln', 'pg', 'pgext'];
-            var filterLabel = ['Point', 'Line', 'Polygon', 'Polygon Extrusion'];
+            var testid = 'pt';
+            var testlabel = 'Point';
+            var testtype = 'point';
+            var testcat = ['<=200', '201~400', '401~600', '601~800', '>800'];
+            var testcolor = ['#fff5eb', '#fed2a6', '#fd9243', '#df4f05', '#7f2704'];
+            var test = [
+                {
+                    'id': testid,
+                    'label': testlabel,
+                    'type': testtype,
+                    'cat': testcat,
+                    'color': testcolor,
+                },
+                {
+                    'id': 'ln',
+                    'label': 'Line',
+                    'type': 'line',
+                    'cat': ['IRT', 'BMT', 'IND'],
+                    'color': ['#a1dab4', '#41b6c4', '#2c7fb8'],
+                },];
 
 
-            for (var i = 0; i < filterID.length; i++) {
-                var inputid = filterID[i];
-                var labeltext = filterLabel[i];
 
+            for (var i = 0; i < test.length; i++) {
                 var input = document.createElement('input');
                 input.type = 'checkbox';
-                input.id = inputid;
+                input.id = test[i]['id'];
                 input.checked = true;
                 filterGroup.appendChild(input);
 
                 var label = document.createElement('label');
-                label.setAttribute('for', inputid);
-                label.textContent = labeltext;
+                label.setAttribute('for', test[i]['id']);
+                label.textContent = test[i]['label'];
                 filterGroup.appendChild(label);
 
                 var linebreak = document.createElement("br");
                 filterGroup.appendChild(linebreak);
 
+                for (var j = 0; j < test[i]['cat'].length; j++) {
+                    var cat = test[i]['cat'][j];
+                    var clr = test[i]['color'][j];
+                    var item = document.createElement('div');
+                    item.className = test[i]['id'] + 'legend';
+                    var key = document.createElement('span');
+                    key.className = 'legend-key-' + test[i]['type'];
+                    key.style.backgroundColor = clr;
+                    var value = document.createElement('span');
+                    value.innerHTML = cat;
+                    item.appendChild(key);
+                    item.appendChild(value);
+                    filterGroup.appendChild(item);
+                };
+
                 input.addEventListener('click', function (e) {
                     var clickedLayer = this.id;
                     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+                    var legendid = document.getElementsByClassName(clickedLayer + 'legend');
                     if (visibility === 'visible') {
                         map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                        for (var k = 0; k < legendid.length; k++) {
+                            legendid[k].style.display = 'none';
+                        }
                     } else {
                         map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                        for (var k = 0; k < legendid.length; k++) {
+                            legendid[k].style.display = 'block';
+                        }
                     }
                 });
-
             };
+
+
+
+
+
+
 
 
 
