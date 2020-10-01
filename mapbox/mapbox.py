@@ -11,6 +11,18 @@ path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/mapbox/'
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 pt=gpd.read_file(path+'pointtest.geojson')
 pt['LatestEntries'].describe(percentiles=np.arange(0.2,1,0.2))
 pt['cat']=np.where(pt['LatestEntries']>800,'>800',
