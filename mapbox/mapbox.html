@@ -576,22 +576,22 @@
                     };
                 });
             };
-        });
 
 
 
-        // Set collapse event
-        var collapsevalue = 0;
-        header.addEventListener('click', function () {
-            if (collapsevalue === 0) {
-                document.getElementById('legends').style.display = "none";
-                document.getElementById('chevron').className = "bi bi-chevron-up";
-                collapsevalue = 1;
-            } else {
-                document.getElementById('legends').style.display = "block";
-                document.getElementById('chevron').className = "bi bi-chevron-down";
-                collapsevalue = 0;
-            };
+            // Set collapse event
+            var collapsevalue = 0;
+            header.addEventListener('click', function () {
+                if (collapsevalue === 0) {
+                    document.getElementById('legends').style.display = "none";
+                    document.getElementById('chevron').className = "bi bi-chevron-up";
+                    collapsevalue = 1;
+                } else {
+                    document.getElementById('legends').style.display = "block";
+                    document.getElementById('chevron').className = "bi bi-chevron-down";
+                    collapsevalue = 0;
+                };
+            });
         });
     </script>
 
