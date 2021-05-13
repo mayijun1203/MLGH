@@ -76,6 +76,6 @@ pandasResults = results.getEstimatedParameters()
 print(pandasResults)
 
 print(results)
-results.writeHtml('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/biogeme/swissmetro.html')
+results.writeHtml()
 
 
