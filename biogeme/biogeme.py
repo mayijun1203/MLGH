@@ -16,14 +16,16 @@ db.getSampleSize()
 
 globals().update(db.variables)
 
+# filter
 exclude=((PURPOSE!=1)*(PURPOSE!=3)+(CHOICE==0))>0
-
 db.remove(exclude)
 
 
+
+# default value, lower bound, upper bound, status (unchanged if not 0)
 ASC_CAR=biogeme.expressions.Beta('ASC_CAR',0,None,None,0)
 ASC_TRAIN=biogeme.expressions.Beta('ASC_TRAIN',0,None,None,0)
-ASC_SM=biogeme.expressions.Beta('ASC_SM',0,None,None,1)
+ASC_SM=biogeme.expressions.Beta('ASC_SM',0,None,None,1) # stay as benchmark, therefore 0
 B_TIME=biogeme.expressions.Beta('B_TIME',0,None,None,0)
 B_COST=biogeme.expressions.Beta('B_COST',0,None,None,0)
 
