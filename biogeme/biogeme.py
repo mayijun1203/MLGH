@@ -72,12 +72,40 @@ bio = biogeme.biogeme.BIOGEME(db, logprob)
 bio.modelName = 'swissmetro'
 
 results = bio.estimate()
-
-
 pandasResults = results.getEstimatedParameters()
 print(pandasResults)
 
 print(results)
 results.writeHtml()
+
+
+# Heterogeneity
+# adding interaction variables
+V1 = ASC_TRAIN * AGE * INCOME + \
+     B_TIME * TRAIN_TT_SCALED * AGE * INCOME + \
+     B_COST * TRAIN_COST_SCALED * AGE * INCOME
+
+# non-linear
+# log
+# box-cox
+
+
+
+# Nested
+MU=biogeme.expressions.Beta('MU', 1, 1, 10, 0)
+#Definition of nests:
+# 1: nests parameter
+# 2: list of alternatives
+existing = MU, [1, 3]
+future = 1, [2]
+nests = existing, future
+logprob = biogeme.models.lognested(V, av, nests, CHOICE)
+bio = biogeme.biogeme.BIOGEME(db, logprob)
+bio.modelName = 'nestedswissmetro'
+
+results = bio.estimate()
+pandasResults = results.getEstimatedParameters()
+print(pandasResults)
+
 
 
