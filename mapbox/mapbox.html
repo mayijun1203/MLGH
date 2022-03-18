@@ -465,12 +465,13 @@
 
             // Add point popup
             // Add click event
-            map.on('click', 'ptlayer', function (e) {
+            function clickOnMap(e) {
                 var coordinates = e.features[0].geometry.coordinates.slice(); // get point coordinates
                 var description = "<b>Station: </b><span>" + e.features[0].properties.CplxName + "</span><br>"; // description in the popup
                 description += "<b>Entry: </b><span>" + e.features[0].properties.LatestEntries + "</span><br>";
                 popup.setLngLat(coordinates).setHTML(description).addTo(map); //add popup
-            });
+            }
+            map.on('click', 'ptlayer', clickOnMap);
             // Add hover events
             map.on('mouseenter', 'ptlayer', function () {
                 map.getCanvas().style.cursor = 'pointer'; // mouse becoming pointer
