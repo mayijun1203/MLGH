@@ -17,10 +17,6 @@ mapboxtoken=pd.read_table(path+'mapboxtoken.txt',header=None).loc[0,0]
 
 
 
-
-
-
-
 # Testing
 df=pd.read_csv(path+'Subway_ridership_data_20200903.csv')
 df=df[::-1].reset_index(drop=True)
@@ -242,13 +238,6 @@ fig.write_html(path+'cplxpknta.html',include_plotlyjs='cdn')
 
 
 
-
-
-
-
-
-
-
 # Plotly Graph Objects
 gdf=gpd.read_file(path+'cplxpknta.shp')
 gdf['PKDiffPct3'].describe(percentiles=np.arange(0.2,1,0.2))
@@ -274,6 +263,508 @@ fig.update_layout(mapbox_style="carto-positron",
                                  'lon':np.mean([min(gdf.bounds['minx']),max(gdf.bounds['maxx'])])})
 fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 fig.show()
+
+
+
+
+
+
+
+
+
+# Line Chart
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.8)',
+          'Weekday PM Peak':'rgba(173,139,201,0.8)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig=go.Figure()
+fig=fig.add_trace(go.Scatter(name='',
+                             mode='none',
+                             x=df['Year'],
+                             y=df['Weekday AM Peak'],
+                             showlegend=False,
+                             hovertext=['<b>Year: </b>'+str(x) for x in df['Year']],
+                             hoverinfo='text'))
+for i in ['Weekday AM Peak','Weekday PM Peak','Saturday Midday']:
+    fig=fig.add_trace(go.Scatter(name=i,
+                                 mode='lines+markers',
+                                 x=df['Year'],
+                                 y=df[i],
+                                 line={'color':dfcolors[i],
+                                       'width':2},
+                                 marker = {'color': dfcolors[i],
+                                           'size': 6},
+                                 hovertext=['<b>'+str(i)+': </b>'+'{:,.0f}'.format(x) for x in df[i]],
+                                 hoverinfo='text'))
+fig.update_layout(
+    template='plotly_white',
+    title={'text':'<b>Average Peak Hour Pedestrian Counts</b>',
+           'font_size':20,
+           'x':0.5,
+           'xanchor':'center',
+           'y':0.95,
+           'yanchor':'top'},
+    legend={'orientation':'h',
+            'title_text':'',
+            'font_size':16,
+            'x':0.5,
+            'xanchor':'center',
+            'y':1,
+            'yanchor':'bottom'},
+    margin={'b':120,
+            'l':80,
+            'r':40,
+            't':120},
+    xaxis={'title':{'text':'<b>Year</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'dtick':'M12',
+           'range':[min(df['Year'])-0.5,max(df['Year'])+0.5],
+           'fixedrange':True,
+           'showgrid':False},
+    yaxis={'title':{'text':'<b>Hourly Total</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'rangemode':'tozero',
+           'fixedrange':True,
+           'showgrid':True},
+    hoverlabel={'font_size':14},
+    font={'family':'Arial',
+          'color':'black'},
+    dragmode=False,
+    hovermode='x unified')
+fig.add_annotation(
+    text='Data Source: <a href="https://data.ny.gov/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h/about" target="blank">NYC DOT</a> | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/peds/pedcounts.csv" target="blank">Download Chart Data</a>',
+    font_size=14,
+    showarrow=False,
+    x=1,
+    xanchor='right',
+    xref='paper',
+    y=0,
+    yanchor='top',
+    yref='paper',
+    yshift=-80)
+fig.write_html(path+'linechart.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
+
+
+
+
+
+
+# Stacked Bar Chart
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.8)',
+          'Weekday PM Peak':'rgba(173,139,201,0.8)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig=go.Figure()
+for i in ['Weekday AM Peak','Weekday PM Peak','Saturday Midday']:
+    fig=fig.add_trace(go.Bar(name=i,
+                             x=df['Year'],
+                             y=df[i],
+                             marker = {'color': dfcolors[i]},
+                             width=0.5,
+                             hovertext=['<b>'+str(i)+': </b>'+'{:,.0f}'.format(x) for x in df[i]],
+                             hoverinfo='text'))
+fig=fig.add_trace(go.Scatter(name='',
+                         mode='none',
+                         x=df['Year'],
+                         y=df['Weekday AM Peak'],
+                         showlegend=False,
+                         hovertext=['<b>Year: </b>'+str(x) for x in df['Year']],
+                         hoverinfo='text'))
+fig.update_layout(
+    barmode='stack',
+    template='plotly_white',
+    title={'text':'<b>Average Peak Hour Pedestrian Counts</b>',
+           'font_size':20,
+           'x':0.5,
+           'xanchor':'center',
+           'y':0.95,
+           'yanchor':'top'},
+    legend={'orientation':'h',
+            'title_text':'',
+            'font_size':16,
+            'x':0.5,
+            'xanchor':'center',
+            'y':1,
+            'yanchor':'bottom'},
+    margin={'b':120,
+            'l':80,
+            'r':40,
+            't':120},
+    xaxis={'title':{'text':'<b>Year</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'dtick':'M12',
+           'range':[min(df['Year'])-0.5,max(df['Year'])+0.5],
+           'fixedrange':True,
+           'showgrid':False},
+    yaxis={'title':{'text':'<b>Hourly Total</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'rangemode':'tozero',
+           'fixedrange':True,
+           'showgrid':True},
+    hoverlabel={'font_size':14},
+    font={'family':'Arial',
+          'color':'black'},
+    dragmode=False,
+    hovermode='x unified')
+fig.add_annotation(
+    text='Data Source: <a href="https://data.ny.gov/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h/about" target="blank">NYC DOT</a> | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/peds/pedcounts.csv" target="blank">Download Chart Data</a>',
+    font_size=14,
+    showarrow=False,
+    x=1,
+    xanchor='right',
+    xref='paper',
+    y=0,
+    yanchor='top',
+    yref='paper',
+    yshift=-80)
+fig.write_html(path+'stackedbarchart.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
+
+
+
+
+
+# Fill Chart
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.6)',
+          'Weekday PM Peak':'rgba(173,139,201,0.6)',
+          'Saturday Midday':'rgba(103,191,92,0.6)'}
+fig=go.Figure()
+for i in ['Weekday AM Peak','Weekday PM Peak','Saturday Midday']:
+    fig=fig.add_trace(go.Scatter(name=i,
+                                 x=df['Year'],
+                                 y=df[i],
+                                 mode = 'none',
+                                 stackgroup = 'one',
+                                 groupnorm = '',
+                                 orientation = 'v',
+                                 fill = 'tonexty',
+                                 fillcolor = dfcolors[i],
+                                 hovertext=['<b>'+str(i)+': </b>'+'{:,.0f}'.format(x) for x in df[i]],
+                                 hoverinfo='text'))
+fig=fig.add_trace(go.Scatter(name='',
+                         mode='none',
+                         x=df['Year'],
+                         y=df['Weekday AM Peak'],
+                         showlegend=False,
+                         hovertext=['<b>Year: </b>'+str(x) for x in df['Year']],
+                         hoverinfo='text'))
+fig.update_layout(
+    template='plotly_white',
+    title={'text':'<b>Average Peak Hour Pedestrian Counts</b>',
+           'font_size':20,
+           'x':0.5,
+           'xanchor':'center',
+           'y':0.95,
+           'yanchor':'top'},
+    legend={'orientation':'h',
+            'title_text':'',
+            'font_size':16,
+            'x':0.5,
+            'xanchor':'center',
+            'y':1,
+            'yanchor':'bottom'},
+    margin={'b':120,
+            'l':80,
+            'r':40,
+            't':120},
+    xaxis={'title':{'text':'<b>Year</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'dtick':'M12',
+           'range':[min(df['Year'])-0.5,max(df['Year'])+0.5],
+           'fixedrange':True,
+           'showgrid':False},
+    yaxis={'title':{'text':'<b>Hourly Total</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'rangemode':'tozero',
+           'fixedrange':True,
+           'showgrid':True},
+    hoverlabel={'font_size':14},
+    font={'family':'Arial',
+          'color':'black'},
+    dragmode=False,
+    hovermode='x unified')
+fig.add_annotation(
+    text='Data Source: <a href="https://data.ny.gov/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h/about" target="blank">NYC DOT</a> | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/peds/pedcounts.csv" target="blank">Download Chart Data</a>',
+    font_size=14,
+    showarrow=False,
+    x=1,
+    xanchor='right',
+    xref='paper',
+    y=0,
+    yanchor='top',
+    yref='paper',
+    yshift=-80)
+fig.write_html(path+'fillchart.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
+
+
+
+
+
+
+
+# Two Axis Chart
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.6)',
+          'Weekday PM Peak':'rgba(173,139,201,0.6)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig=go.Figure()
+for i in ['Weekday AM Peak','Weekday PM Peak']:
+    fig=fig.add_trace(go.Scatter(name=i,
+                                 x=df['Year'],
+                                 y=df[i],
+                                 mode = 'none',
+                                 stackgroup = 'one',
+                                 groupnorm = '',
+                                 orientation = 'v',
+                                 fill = 'tonexty',
+                                 fillcolor = dfcolors[i],
+                                 hovertext=['<b>'+str(i)+': </b>'+'{:,.0f}'.format(x) for x in df[i]],
+                                 hoverinfo='text'))
+fig=fig.add_trace(go.Scatter(name='Saturday Midday',
+                         mode='lines',
+                         x=df['Year'],
+                         y=df['Saturday Midday'],
+                         yaxis='y2',
+                         showlegend=False,
+                         line={'color':dfcolors['Saturday Midday'],
+                               'width':3},
+                         hovertext=['<b>Saturday Midday: </b>'+str(x) for x in df['Saturday Midday']],
+                         hoverinfo='text'))
+fig=fig.add_trace(go.Scatter(name='',
+                         mode='none',
+                         x=df['Year'],
+                         y=df['Weekday AM Peak'],
+                         showlegend=False,
+                         hovertext=['<b>Year: </b>'+str(x) for x in df['Year']],
+                         hoverinfo='text'))
+fig.update_layout(
+    template='plotly_white',
+    title={'text':'<b>Average Peak Hour Pedestrian Counts</b>',
+           'font_size':20,
+           'x':0.5,
+           'xanchor':'center',
+           'y':0.95,
+           'yanchor':'top'},
+    legend={'orientation':'h',
+            'title_text':'',
+            'font_size':16,
+            'x':0.5,
+            'xanchor':'center',
+            'y':1,
+            'yanchor':'bottom'},
+    margin={'b':120,
+            'l':80,
+            'r':40,
+            't':120},
+    xaxis={'title':{'text':'<b>Year</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'dtick':'M12',
+           'range':[min(df['Year'])-0.5,max(df['Year'])+0.5],
+           'fixedrange':True,
+           'showgrid':False},
+    yaxis={'title':{'text':'<b>Hourly Total</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'rangemode':'tozero',
+           'fixedrange':True,
+           'showgrid':True},
+    yaxis2={'title':{'text':'<b>Saturday</b>',
+                 'font_size':14},
+        'tickfont_size':12,
+        'side':'right',
+        'overlaying':'y',
+        'rangemode':'tozero',
+        'fixedrange':True,
+        'showgrid':False},
+    hoverlabel={'font_size':14},
+    font={'family':'Arial',
+          'color':'black'},
+    dragmode=False,
+    hovermode='x unified')
+fig.add_annotation(
+    text='Data Source: <a href="https://data.ny.gov/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h/about" target="blank">NYC DOT</a> | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/peds/pedcounts.csv" target="blank">Download Chart Data</a>',
+    font_size=14,
+    showarrow=False,
+    x=1,
+    xanchor='right',
+    xref='paper',
+    y=0,
+    yanchor='top',
+    yref='paper',
+    yshift=-80)
+fig.write_html(path+'twoaxischart.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
+
+
+
+
+
+
+# Pie Chart
+df=pd.read_csv(path+'pedcounts.csv')
+df=df.loc[[0]]
+df=df.melt(id_vars='Year',value_vars=['Weekday AM Peak','Weekday PM Peak','Saturday Midday'])
+df['pct']=df['value']/sum(df['value'])
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.8)',
+          'Weekday PM Peak':'rgba(173,139,201,0.8)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig = go.Figure()
+fig = fig.add_trace(go.Pie(labels = df['variable'],
+                           values = df['pct'],
+                           hole = 0.5,
+                           sort = False,
+                           direction = 'clockwise',
+                           pull=0.05,
+                           marker = {'colors': list(dfcolors.values())},
+                           textinfo = 'text',
+                           text= df['pct'].map('{:.0%}'.format),
+                           textposition='outside',
+                           textfont={'size':14},
+                           hoverinfo = 'text',
+                           hovertext = '<b>Type: </b>'+ df['variable'] + '<br><b>Counts: </b>' + df['value'].map('{:,.0f}'.format) +'<br><b>Percentage: </b>' + df['pct'].map('{:.0%}'.format)))
+fig.update_layout(template = 'plotly_white',
+                  title = {'text': '<b>Micromobility Peak Hour Sample Counts<b>',
+                           'font_size': 20,
+                           'x': .5,
+                           'xanchor': 'center',
+                           'y': .95,
+                           'yanchor': 'top'},
+                  legend = {'traceorder': 'normal',
+                            'orientation': 'h',
+                            'font_size': 16,
+                            'x': .5,
+                            'xanchor': 'center',
+                            'y': 1,
+                            'yanchor': 'bottom'},
+                  margin = {'b': 40, 
+                            'l': 80,
+                            'r': 80,
+                            't': 200},
+                  hoverlabel = {'font_size': 14}, 
+                  font = {'family': 'Arial',
+                          'color': 'black'},
+                  dragmode = False)
+fig.add_annotation(text = 'Data Source: NYC DCP (2021) | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/micromobility/micromobility.csv" target="blank">Download Chart Data</a>',
+                   font_size = 14,
+                   showarrow = False, 
+                   x = 1, 
+                   xanchor = 'right',
+                   xref = 'paper',
+                   y=0,
+                   yanchor='top',
+                   yref='paper',
+                   yshift=0)
+fig
+fig.write_html(path + 'piechart.html', include_plotlyjs='cdn', config={'displayModeBar':False})
+
+
+
+
+
+# Subplot
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.8)',
+          'Weekday PM Peak':'rgba(173,139,201,0.8)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig = ps.make_subplots(rows = 1,
+                       cols = 3,
+                       shared_yaxes = True,
+                       subplot_titles = ['Weekday AM Peak','Weekday PM Peak','Saturday Midday'])
+for i in df['Year']:
+    fig = fig.add_trace(go.Bar(name = i,
+                                x = [0],
+                                y = df.loc[df['Year']==i,'Weekday AM Peak'],
+                                legendgroup = i,
+                                showlegend = True),
+                        row = 1,
+                        col = 1)    
+for i in range(1,3):
+    for j in df['Year']:
+        fig = fig.add_trace(go.Bar(name = ['Weekday AM Peak','Weekday PM Peak','Saturday Midday'][i],
+                                    x = [0],
+                                    y = df.loc[df['Year']==j,['Weekday AM Peak','Weekday PM Peak','Saturday Midday'][i]],
+                                    legendgroup = j,
+                                    showlegend = False),
+                            row = 1,
+                            col = i+1)    
+fig.update_layout(
+    barmode='stack',
+    template='plotly_white',
+    title={'text':'<b>Average Peak Hour Pedestrian Counts</b>',
+           'font_size':20,
+           'x':0.5,
+           'xanchor':'center',
+           'y':0.95,
+           'yanchor':'top'},
+    legend={'orientation':'h',
+            'title_text':'',
+            'font_size':16,
+            'x':0.5,
+            'xanchor':'center',
+            'y':1,
+            'yanchor':'bottom'},
+    margin={'b':120,
+            'l':80,
+            'r':40,
+            't':120},
+    xaxis={'fixedrange':True,
+           'showgrid':False},
+    yaxis={'title':{'text':'<b>Hourly Total</b>',
+                    'font_size':14},
+           'tickfont_size':12,
+           'rangemode':'tozero',
+           'fixedrange':True,
+           'showgrid':True},
+    hoverlabel={'font_size':14},
+    font={'family':'Arial',
+          'color':'black'},
+    dragmode=False)
+for i in range(0,3):
+    fig.layout.annotations[i].update(y = 0, 
+                                     yanchor = 'top',
+                                     yref = 'paper',
+                                     yshift = -40,
+                                     text = '<b>' + ['Weekday AM Peak','Weekday PM Peak','Saturday Midday'][i] + '</b>',
+                                     font = {'size': 14,
+                                             'family': 'Arial'})
+fig.add_annotation(
+    text='Data Source: <a href="https://data.ny.gov/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h/about" target="blank">NYC DOT</a> | <a href="https://raw.githubusercontent.com/NYCPlanning/td-trends/main/peds/pedcounts.csv" target="blank">Download Chart Data</a>',
+    font_size=14,
+    showarrow=False,
+    x=1,
+    xanchor='right',
+    xref='paper',
+    y=0,
+    yanchor='top',
+    yref='paper',
+    yshift=-80)
+fig.write_html(path+'subplot.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
+
+
+
+
+
+
+
+
+
+
 
 
 
