@@ -762,9 +762,37 @@ fig.write_html(path+'subplot.html',
 
 
 
-
-
-
-
+# Slider
+df=pd.read_csv(path+'pedcounts.csv')
+dfcolors={'Weekday AM Peak':'rgba(255,158,74,0.8)',
+          'Weekday PM Peak':'rgba(173,139,201,0.8)',
+          'Saturday Midday':'rgba(103,191,92,0.8)'}
+fig = go.Figure()
+for i in range(0,len(df)):
+    fig.add_trace(go.Bar(name=str(df.loc[i,'Year']),
+                         visible=False,
+                         x=['Weekday AM Peak','Weekday PM Peak','Saturday Midday'],
+                         y=df.loc[i,['Weekday AM Peak','Weekday PM Peak','Saturday Midday']],
+                         marker={'color':'#00CED1'}))
+fig.data[-1].visible = True
+steps = []
+for i in range(len(fig.data)):
+    step = dict(
+        method="update",
+        args=[{"visible": [False] * len(fig.data)}],  # layout attribute
+        label=str(df.loc[i,'Year']),
+    )
+    step["args"][0]["visible"][i] = True  # Toggle i'th trace to "visible"
+    steps.append(step)
+sliders=[{'active':len(fig.data)-1,
+          'currentvalue':{'visible':False},
+          'steps':steps}]
+fig.update_layout(
+    sliders=sliders
+)
+fig
+fig.write_html(path+'slider.html',
+               include_plotlyjs='cdn',
+               config={'displayModeBar':False})
 
 
