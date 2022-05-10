@@ -9,7 +9,7 @@ b=l[int(len(l)/2):]
 def st(x):
     fn=[]
     tp=x.copy()
-    for i in range(0,len(x)):
+    for i in range(0,len(tp)):
         pos=0
         for j in range(1,len(tp)):
             if tp[j]<tp[pos]:
