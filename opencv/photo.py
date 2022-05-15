@@ -1,5 +1,10 @@
 import cv2
 import numpy as np
+import plotly.io as pio
+import plotly.express as px
+
+
+pio.renderers.default = "browser"
 
 
 # Read and show image
@@ -100,11 +105,22 @@ rot=cv2.rotate(df,cv2.cv2.ROTATE_90_CLOCKWISE)
 # Flipping
 flip=cv2.flip(df,-1)
 # 0:verticle; 1:horizontal; -1:both
-cv2.imshow('Flipped',flip)
+# cv2.imshow('Flipped',flip)
 
 
 
-
+# Contour Detection
+blank=np.zeros(df.shape,dtype='uint8')
+gray=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+# blur=cv2.GaussianBlur(gray,(5,5),cv2.BORDER_DEFAULT)
+# canny=cv2.Canny(blur,125,175)
+ret,thresh=cv2.threshold(gray,125,255,cv2.THRESH_BINARY) # Binarizing the image
+contours,hierarchies=cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+cv2.drawContours(blank,contours,-1,(0,255,0),1)
+# cv2.imshow('Contours',blank)
+print(len(contours))
+fig=px.imshow(blank)
+fig.show()
 
 
 
