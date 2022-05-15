@@ -107,8 +107,6 @@ flip=cv2.flip(df,-1)
 # 0:verticle; 1:horizontal; -1:both
 # cv2.imshow('Flipped',flip)
 
-
-
 # Contour Detection
 blank=np.zeros(df.shape,dtype='uint8')
 gray=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
@@ -118,9 +116,55 @@ ret,thresh=cv2.threshold(gray,125,255,cv2.THRESH_BINARY) # Binarizing the image
 contours,hierarchies=cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 cv2.drawContours(blank,contours,-1,(0,255,0),1)
 # cv2.imshow('Contours',blank)
-print(len(contours))
-fig=px.imshow(blank)
-fig.show()
+# print(len(contours))
+# fig=px.imshow(blank)
+# fig.show()
+
+# Color space
+# BGR to Grayscale
+grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+# cv2.imshow('Grey',grey)
+# BGR to HSV
+hsv=cv2.cvtColor(df,cv2.COLOR_BGR2HSV)
+# cv2.imshow('HSV',hsv)
+# BGR to LAB
+lab=cv2.cvtColor(df,cv2.COLOR_BGR2LAB)
+# cv2.imshow('Lab',lab)
+# BGT to RGB
+rgb=cv2.cvtColor(df,cv2.COLOR_BGR2RGB)
+# cv2.imshow('RGB',rgb)
+# HSV to BGR
+bgr=cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
+# cv2.imshow('BGR',bgr)
+
+# Color channel
+# Split
+b,g,r=cv2.split(df)
+# cv2.imshow('B',b) # grayscale
+# cv2.imshow('G',g)
+# cv2.imshow('R',r)
+# Merge
+merged=cv2.merge([b,g,r])
+# cv2.imshow('Merged',merged)
+# Actual blue
+blank=np.zeros(df.shape[:2],dtype='uint8')
+blue=cv2.merge([b,blank,blank])
+# cv2.imshow('Blue',blue)
+
+# Blurring & Smoothing
+# Averaging
+avg=cv2.blur(df,ksize=(7,7))
+# cv2.imshow('Averaging',avg)
+# Gaussian (more natural)
+gaus=cv2.GaussianBlur(df,(7,7),0)
+# cv2.imshow('Gaussian',gaus)
+# Median
+med=cv2.medianBlur(df,7)
+# cv2.imshow('Median',med)
+# Bilateral
+bilat=cv2.bilateralFilter(df,7,15,15)
+# cv2.imshow('Bilateral',bilat)
+
 
 
 
