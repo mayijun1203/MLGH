@@ -162,7 +162,7 @@ gaus=cv2.GaussianBlur(df,(7,7),0)
 med=cv2.medianBlur(df,7)
 # cv2.imshow('Median',med)
 # Bilateral
-bilat=cv2.bilateralFilter(df,7,15,15)
+bilat=cv2.bilateralFilter(df,7,35,25)
 # cv2.imshow('Bilateral',bilat)
 
 
