@@ -165,6 +165,41 @@ med=cv2.medianBlur(df,7)
 bilat=cv2.bilateralFilter(df,7,35,25)
 # cv2.imshow('Bilateral',bilat)
 
+# Bitwise operators
+blank=np.zeros((500,500),dtype='uint8')
+rect=cv2.rectangle(blank.copy(),(100,100),(400,400),255,-1)
+# cv2.imshow('Rectangle',rect)
+circ=cv2.circle(blank.copy(),(250,250),200,255,-1)
+# cv2.imshow('Circle',circ)
+# AND (intersection)
+btwand=cv2.bitwise_and(rect,circ)
+# cv2.imshow('Bitwise AND',btwand)
+# OR (Union)
+btwor=cv2.bitwise_or(rect,circ)
+# cv2.imshow('Bitwise OR',btwor)
+# XOR (Complement)
+btwxor=cv2.bitwise_xor(rect,circ)
+# cv2.imshow('Bitwise XOR',btwxor)
+# NOT (Reverse)
+btwnot=cv2.bitwise_not(rect)
+# cv2.imshow('Bitwise NOT',btwnot)
+
+# Masking
+blank=np.zeros(df.shape[:2],dtype='uint8')
+circ=cv2.circle(blank.copy(),(df.shape[1]//2,df.shape[0]//2),100,255,-1)
+rect=cv2.rectangle(blank.copy(),(100,100),(df.shape[1]//2,df.shape[0]//2),255,-1)
+mask=cv2.bitwise_xor(rect,circ)
+cv2.imshow('Mask',mask)
+masked=cv2.bitwise_and(df,df,mask=mask)
+cv2.imshow('Masked',masked)
+
+
+
+
+
+
+
+
 
 
 
