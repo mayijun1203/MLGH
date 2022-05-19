@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import plotly.io as pio
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 pio.renderers.default = "browser"
@@ -189,13 +190,32 @@ blank=np.zeros(df.shape[:2],dtype='uint8')
 circ=cv2.circle(blank.copy(),(df.shape[1]//2,df.shape[0]//2),100,255,-1)
 rect=cv2.rectangle(blank.copy(),(100,100),(df.shape[1]//2,df.shape[0]//2),255,-1)
 mask=cv2.bitwise_xor(rect,circ)
-cv2.imshow('Mask',mask)
+# cv2.imshow('Mask',mask)
 masked=cv2.bitwise_and(df,df,mask=mask)
-cv2.imshow('Masked',masked)
+# cv2.imshow('Masked',masked)
 
+# Histogram
+# Grey
+grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+# cv2.imshow('Grey',grey)
+blank=np.zeros(df.shape[:2],dtype='uint8')
+mask=cv2.circle(blank.copy(),(df.shape[1]//2,df.shape[0]//2),100,255,-1)
+masked=cv2.bitwise_and(grey,grey,mask=mask)
+# cv2.imshow('Masked',masked)
+greyhist=cv2.calcHist([df],channels=[0],mask=mask,histSize=[256],ranges=[0,256])
+fig=px.line(greyhist)
+# fig.show()
 
-
-
+# Color
+fig=go.Figure()
+colors=('blue','green','red')
+for i,col in enumerate(colors):
+    hist=cv2.calcHist([df],channels=[i],mask=mask,histSize=[256],ranges=[0,256])
+    fig=fig.add_trace(go.Scatter(x=list(range(0,256)),
+                                 y=[x[0] for x in hist],
+                                 mode='lines',
+                                 line_color=col))
+# fig.show()
 
 
 
