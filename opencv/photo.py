@@ -48,6 +48,7 @@ cv2.line(blank,(0,0),(blank.shape[1]//2,blank.shape[0]//2),(255,0,255),thickness
 cv2.putText(blank,'Hello World',(225,225),cv2.FONT_HERSHEY_TRIPLEX,1,(255,255,0),2)
 # cv2.imshow('Text',blank)
 
+
 # Convert to grayscale
 gray=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
 # cv2.imshow('Gray',gray)
@@ -80,6 +81,7 @@ resized=cv2.resize(df,(1500,1500),interpolation=cv2.INTER_AREA)
 cropped=df[50:200,200:400]
 # cv2.imshow('Crop',cropped)
 
+
 # Translation
 def translate(img,x,y):
     transMat=np.float32([[1,0,x],[0,1,y]])
@@ -108,6 +110,7 @@ flip=cv2.flip(df,-1)
 # 0:verticle; 1:horizontal; -1:both
 # cv2.imshow('Flipped',flip)
 
+
 # Contour Detection
 blank=np.zeros(df.shape,dtype='uint8')
 gray=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
@@ -120,6 +123,7 @@ cv2.drawContours(blank,contours,-1,(0,255,0),1)
 # print(len(contours))
 # fig=px.imshow(blank)
 # fig.show()
+
 
 # Color space
 # BGR to Grayscale
@@ -152,6 +156,7 @@ blank=np.zeros(df.shape[:2],dtype='uint8')
 blue=cv2.merge([b,blank,blank])
 # cv2.imshow('Blue',blue)
 
+
 # Blurring & Smoothing
 # Averaging
 avg=cv2.blur(df,ksize=(7,7))
@@ -165,6 +170,7 @@ med=cv2.medianBlur(df,7)
 # Bilateral
 bilat=cv2.bilateralFilter(df,7,35,25)
 # cv2.imshow('Bilateral',bilat)
+
 
 # Bitwise operators
 blank=np.zeros((500,500),dtype='uint8')
@@ -184,6 +190,7 @@ btwxor=cv2.bitwise_xor(rect,circ)
 # NOT (Reverse)
 btwnot=cv2.bitwise_not(rect)
 # cv2.imshow('Bitwise NOT',btwnot)
+
 
 # Masking
 blank=np.zeros(df.shape[:2],dtype='uint8')
@@ -216,6 +223,48 @@ for i,col in enumerate(colors):
                                  mode='lines',
                                  line_color=col))
 # fig.show()
+
+
+# Thresholding
+# Simple
+grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+threshold,thresh=cv2.threshold(grey,thresh=150,maxval=255,type=cv2.THRESH_BINARY)
+# cv2.imshow('Simple Threshold',thresh)
+
+# Inverse
+threshold,threshiv=cv2.threshold(grey,thresh=150,maxval=255,type=cv2.THRESH_BINARY_INV)
+# cv2.imshow('Simple Threshold Inverse',threshiv)
+
+# Adaptive
+adaptthresh=cv2.adaptiveThreshold(grey,maxValue=255,adaptiveMethod=cv2.ADAPTIVE_THRESH_MEAN_C,thresholdType=cv2.THRESH_BINARY,blockSize=11,C=3)
+# cv2.imshow('Adaptive Threshold Mean',adaptthresh)
+
+# Adaptive Inverse
+adaptthreshinv=cv2.adaptiveThreshold(grey,maxValue=255,adaptiveMethod=cv2.ADAPTIVE_THRESH_GAUSSIAN_C,thresholdType=cv2.THRESH_BINARY_INV,blockSize=11,C=3)
+# cv2.imshow('Adaptive Threshold Gaussian Inverse',adaptthreshinv)
+
+
+# Edge Detection
+# Laplacian
+grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+lap=cv2.Laplacian(grey,ddepth=cv2.CV_64F)
+lap=np.uint8(np.absolute(lap))
+cv2.imshow('Laplacian',lap)
+
+# Sobel
+sobelx=cv2.Sobel(grey,ddepth=cv2.CV_64F,dx=1,dy=0)
+sobely=cv2.Sobel(grey,ddepth=cv2.CV_64F,dx=0,dy=1)
+combinesobel=cv2.bitwise_or(sobelx,sobely)
+# cv2.imshow('Sobel X',sobelx)
+# cv2.imshow('Sobel Y',sobely)
+cv2.imshow('Combined Sobel',combinesobel)
+
+# Canny
+canny=cv2.Canny(df,threshold1=150,threshold2=175)
+cv2.imshow('Canny',canny)
+
+
+# Face Detection
 
 
 
