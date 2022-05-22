@@ -3,6 +3,7 @@ import numpy as np
 import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go
+import os
 
 
 pio.renderers.default = "browser"
@@ -249,7 +250,7 @@ adaptthreshinv=cv2.adaptiveThreshold(grey,maxValue=255,adaptiveMethod=cv2.ADAPTI
 grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
 lap=cv2.Laplacian(grey,ddepth=cv2.CV_64F)
 lap=np.uint8(np.absolute(lap))
-cv2.imshow('Laplacian',lap)
+# cv2.imshow('Laplacian',lap)
 
 # Sobel
 sobelx=cv2.Sobel(grey,ddepth=cv2.CV_64F,dx=1,dy=0)
@@ -257,17 +258,70 @@ sobely=cv2.Sobel(grey,ddepth=cv2.CV_64F,dx=0,dy=1)
 combinesobel=cv2.bitwise_or(sobelx,sobely)
 # cv2.imshow('Sobel X',sobelx)
 # cv2.imshow('Sobel Y',sobely)
-cv2.imshow('Combined Sobel',combinesobel)
+# cv2.imshow('Combined Sobel',combinesobel)
 
 # Canny
 canny=cv2.Canny(df,threshold1=150,threshold2=175)
-cv2.imshow('Canny',canny)
+# cv2.imshow('Canny',canny)
 
 
 # Face Detection
+# Haar Cascade (Not advanced enough)
+grey=cv2.cvtColor(df,cv2.COLOR_BGR2GRAY)
+haar=cv2.CascadeClassifier('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/haarcascade_frontalface_default.xml')
+faces=haar.detectMultiScale(grey,scaleFactor=1.1,minNeighbors=4)
+# print(len(faces))
+for (x,y,w,h) in faces:
+    cv2.rectangle(df,(x,y),(x+w,y+h),(0,255,0),thickness=2)
+resized=cv2.resize(df,(500,500),interpolation=cv2.INTER_CUBIC)
+# cv2.imshow('Face',resized)
 
 
-
+# Face Recognition
+# Local Binary Patterns Histogram (Not advanced enough)
+# Train
+path='C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/'
+people=['BP','CH']
+haar=cv2.CascadeClassifier('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/haarcascade_frontalface_default.xml')
+features=[]
+labels=[]
+def createtrain():
+    for person in people:
+        label=people.index(person)
+        for img in os.listdir(path+person):
+            imgarray=cv2.imread(path+person+'/'+img)
+            grey=cv2.cvtColor(imgarray,cv2.COLOR_BGR2GRAY)
+            faces=haar.detectMultiScale(grey,scaleFactor=1.1,minNeighbors=4)
+            for (x,y,w,h) in faces:
+                facesroi=grey[y:y+h,x:x+w]
+                features.append(facesroi)
+                labels.append(label)
+createtrain()
+print(len(features))
+print(len(labels))
+features=np.array(features,dtype='object')
+labels=np.array(labels)
+facerecog=cv2.face.LBPHFaceRecognizer_create()
+facerecog.train(features,labels)
+facerecog.save('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/facetrained.yml')
+np.save('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/features.npy',features)
+np.save('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/labels.npy',labels)
+# Read
+features=np.load('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/features.npy',allow_pickle=True)
+labels=np.load('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/labels.npy')
+facerecog=cv2.face.LBPHFaceRecognizer_create()
+facerecog.read('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/facetrained.yml')
+img=cv2.imread('C:/Users/mayij/Desktop/DOC/GITHUB/MLGH/opencv/facerecog.jpg')
+grey=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+# cv2.imshow('Person',grey)
+faces=haar.detectMultiScale(grey,scaleFactor=1.1,minNeighbors=4)
+for (x,y,w,h) in faces:
+    facesroi=grey[y:y+h,x:x+w]
+    label,conf=facerecog.predict(facesroi)
+    cv2.putText(img,text=str(people[label])+' '+str(int(conf)),org=(200,200),fontFace=cv2.FONT_HERSHEY_COMPLEX,fontScale=10,color=(0,255,0))
+    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),5)
+resized=cv2.resize(img,(500,int(img.shape[0]/img.shape[1]*500)),interpolation=cv2.INTER_CUBIC)
+# cv2.imshow('Recgonized',resized)
 
 
 
